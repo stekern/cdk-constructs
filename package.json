@@ -1,0 +1,56 @@
+{
+  "name": "@stekern/cdk-constructs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stekern/cdk-constructs.git"
+  },
+  "version": "0.0.0-development",
+  "main": "dist/index.ts",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc --noEmit && tsc --project tsconfig.build.json"
+  },
+  "files": [
+    "assets/**/*",
+    "dist/**/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "main",
+      {
+        "name": "dev",
+        "channel": "alpha",
+        "prerelease": true
+      }
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "17.0.3",
+    "@commitlint/config-conventional": "17.0.3",
+    "@octokit/types": "7.1.0",
+    "@tsconfig/node16": "1.0.3",
+    "@types/aws-lambda": "8.10.102",
+    "@types/node": "16.11.51",
+    "@typescript-eslint/eslint-plugin": "5.33.1",
+    "@typescript-eslint/parser": "5.33.1",
+    "aws-cdk": "2.38.1",
+    "aws-cdk-lib": "2.38.1",
+    "aws-sdk": "2.1199.0",
+    "constructs": "10.1.81",
+    "esbuild": "0.15.5",
+    "eslint": "8.22.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "husky": "8.0.1",
+    "prettier": "2.7.1",
+    "semantic-release": "19.0.3",
+    "typescript": "4.7.4"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.0.0",
+    "constructs": "^10.0.0"
+  }
+}
