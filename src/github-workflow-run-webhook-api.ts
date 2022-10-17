@@ -23,7 +23,7 @@ type Props = {
   /**
    * A DynamoDB table to store received workflow runs in.
    *
-   * NOTE: The table must be set up with a composite partition key
+   * NOTE: The table must be set up with a composite primary key
    * consisting of a string partition key `PK` and a string sort key `SK`.
    */
   table: dynamodb.ITable
@@ -49,7 +49,8 @@ type Props = {
 
 /**
  * Sets up an API Gateway REST API with a Lambda integration
- * for receiving webhook events from GitHub related to workflow runs.
+ * for receiving webhook events from a GitHub App subscribed to
+ * workflow runs.
  */
 export class GitHubWorkflowRunWebhookApi extends constructs.Construct {
   public readonly webhookReceiverFn: lambda.IFunction
