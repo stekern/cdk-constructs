@@ -62,7 +62,7 @@ export class GitHubWorkflowRunWebhookApi extends constructs.Construct {
       {
         entry: path.join(
           __dirname,
-          "../assets/github-webhook-receiver/index.ts",
+          "../assets/github-workflow-run-webhook-receiver/index.ts",
         ),
         bundling: {
           nodeModules: [],
