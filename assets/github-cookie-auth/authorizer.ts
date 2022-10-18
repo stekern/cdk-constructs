@@ -38,13 +38,28 @@ const getGitHubAppInstallationsForUser = async (
   )) as octokitTypes.Endpoints["GET /user/installations"]["response"]["data"]
 }
 
+const getGitHubOrgsForUser = async (token: string, gitHubAppId: string) => {
+  const options = {
+    host: "api.github.com",
+    path: `/user/orgs?per_page=100`,
+    port: 443,
+    method: "GET",
+    headers: {
+      "User-Agent": gitHubAppId,
+      Accept: "application/vnd.github+json",
+      Authorization: `token ${token}`,
+    },
+  }
+  return (await httpRequest(
+    options,
+  )) as octokitTypes.Endpoints["GET /user/orgs"]["response"]["data"]
+}
+
 export const handler = async (
   event: lambdaTypes.APIGatewayRequestAuthorizerEvent,
 ) => {
-  const allowedUsers = process.env.ALLOWED_USERS
-    ? (JSON.parse(process.env.ALLOWED_USERS) as string[])
-    : undefined
   const [
+    accessControl,
     allowedOrigin,
     secretName,
     authCookieEncryptionKeyArn,
@@ -53,6 +68,12 @@ export const handler = async (
     authorizerCacheTableName,
     authorizerCacheTtl,
   ] = [
+    process.env.ACCESS_CONTROL
+      ? (JSON.parse(process.env.ACCESS_CONTROL) as {
+          type: "USERNAME" | "ORG_MEMBERSHIP"
+          whitelist: string[]
+        })
+      : undefined,
     process.env.ALLOWED_ORIGIN,
     process.env.SECRET_NAME,
     process.env.AUTH_COOKIE_ENCRYPTION_KEY_ARN,
@@ -62,7 +83,7 @@ export const handler = async (
     process.env.AUTHORIZER_CACHE_TTL,
   ]
   if (
-    !allowedUsers ||
+    !accessControl ||
     !authCookieEncryptionKeyArn ||
     !secretName ||
     !authCookieName ||
@@ -191,8 +212,20 @@ export const handler = async (
     throw new Error("Unauthenticated")
   }
 
-  const authenticated =
-    username && allowedUsers.includes(username.toLowerCase())
+  let authenticated = false
+  let organizationNames: string[] = []
+  if (accessControl.type === "USERNAME") {
+    authenticated = accessControl.whitelist.includes(username.toLowerCase())
+  } else if (accessControl.type === "ORG_MEMBERSHIP") {
+    const organizationResponse = await getGitHubOrgsForUser(
+      accessToken,
+      gitHubAppId,
+    )
+    organizationNames = organizationResponse.map((o) => o.login.toLowerCase())
+    authenticated = accessControl.whitelist.some((whitelistedOrg) =>
+      organizationNames.includes(whitelistedOrg.toLowerCase()),
+    )
+  }
 
   if (authenticated) {
     const userInstallations = await getGitHubAppInstallationsForUser(
@@ -202,11 +235,17 @@ export const handler = async (
     const installationIds = userInstallations.installations.map(
       (installation) => `${installation.id}`,
     )
-    const authReponse: lambdaTypes.APIGatewayAuthorizerResult = {
+    const context = {
       ...(installationIds.length > 0 && {
-        context: {
-          installationIds: JSON.stringify(installationIds),
-        },
+        installationIds: JSON.stringify(installationIds),
+      }),
+      ...(organizationNames.length > 0 && {
+        organizationNames: JSON.stringify(organizationNames),
+      }),
+    }
+    const authReponse: lambdaTypes.APIGatewayAuthorizerResult = {
+      ...(Object.keys(context).length > 0 && {
+        context,
       }),
       principalId: username,
       policyDocument: {

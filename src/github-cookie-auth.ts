@@ -91,12 +91,20 @@ type Props = {
     }
   }
   /**
-   * A list of GitHub usernames that the Lambda authorizer
-   * will use as an access control list when determining if
-   * the user associated with a given GitHub access token
-   * should be granted access or not.
+   * The access control to use in the Lambda authorizer.
    */
-  allowedUsers: string[]
+  accessControl: {
+    /**
+     * The type of access control to perform, either
+     * based on username or the user's organization membership.
+     */
+    type: "USERNAME" | "ORG_MEMBERSHIP"
+    /**
+     * A list of GitHub usernames or GitHub organization names that will
+     * be granted access.
+     */
+    whitelist: string[]
+  }
   /**
    * Configuration for a Lambda-backed API Gateway that
    * is used to exchange temporary codes for GitHub
@@ -171,9 +179,6 @@ export class GitHubCookieAuth extends constructs.Construct {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     })
-    // Convert to lowercase since GitHub usernames are case-preserving,
-    // and lowercase is easier to work with
-    const allowedUsers = props.allowedUsers.map((user) => user.toLowerCase())
     // Set default values
     const authCookieName = props.authCookieConfiguration.name || "token"
     const authCookieAttributes: Props["authCookieConfiguration"]["attributes"] =
@@ -208,7 +213,12 @@ export class GitHubCookieAuth extends constructs.Construct {
         AUTH_COOKIE_NAME: authCookieName,
         AUTH_COOKIE_ENCRYPTION_KEY_ARN:
           props.authCookieConfiguration.encryptionKey.keyArn,
-        ALLOWED_USERS: JSON.stringify(allowedUsers),
+        ACCESS_CONTROL: JSON.stringify({
+          ...props.accessControl,
+          whitelist: props.accessControl.whitelist.map((item) =>
+            item.toLowerCase(),
+          ),
+        }),
         GITHUB_APP_ID: props.gitHubAppId,
         AUTHORIZER_CACHE_TABLE_NAME: cacheTable.tableName,
         AUTHORIZER_CACHE_TTL: `${props.authorizerResponseTtl.toSeconds()}`,
