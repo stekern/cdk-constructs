@@ -97,6 +97,9 @@ type Props = {
     /**
      * The type of access control to perform, either
      * based on username or the user's organization membership.
+     *
+     * NOTE: `ORG_MEMBERSHIP` requires that the associated GitHub
+     * application has been installed in the respective organization(s)
      */
     type: "USERNAME" | "ORG_MEMBERSHIP"
     /**
