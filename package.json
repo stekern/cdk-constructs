@@ -9,7 +9,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --noEmit && tsc --project tsconfig.build.json && npm run copy-assets",
-    "copy-assets": "mkdir -p dist/assets && cp -R assets/ dist/assets/"
+    "copy-assets": "bash -c 'mkdir -p dist/assets && cp -R assets/ dist/assets/'"
   },
   "files": [
     "dist/**/*"
