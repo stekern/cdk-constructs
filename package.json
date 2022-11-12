@@ -5,8 +5,8 @@
     "url": "https://github.com/stekern/cdk-constructs.git"
   },
   "version": "0.0.0-development",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --noEmit && tsc --project tsconfig.build.json"
   },
