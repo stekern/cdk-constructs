@@ -9,7 +9,8 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --noEmit && tsc --project tsconfig.build.json && npm run copy-assets",
-    "copy-assets": "mkdir -p dist/assets && cp -R assets/* dist/assets"
+    "copy-assets": "find assets -type f -not -name '*.snap' -not -name '*.spec.ts' -not -name 'mocks.ts' -not -name 'types.ts' -exec bash -c 'path=\"{}\" && mkdir -p \"dist/${path%/*}\" && cp \"$path\" \"dist/$path\"' ';'",
+    "test": "vitest run"
   },
   "files": [
     "dist/**/*"
