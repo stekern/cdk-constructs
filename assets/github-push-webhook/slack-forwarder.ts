@@ -69,7 +69,7 @@ const httpRequest = (
   })
 }
 
-const createSlackPayload = (
+export const createSlackPayload = (
   rule: ForwardingRule,
   pushEvent: DbPushEvent,
 ): SlackPayload => {
