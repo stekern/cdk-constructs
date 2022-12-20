@@ -1,0 +1,12 @@
+{
+  "extends": ["config:base"],
+  "automerge": false,
+  "regexManagers": [
+    {
+      "fileMatch": ".*\\.ts$",
+      "matchStrings": [
+        "//\\s*renovate: datasource=(?<datasource>.*?> depName=(?<depName>.*?>\\n.*:(?<currentValue>.*?)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ]
+    }
+  ]
+}
