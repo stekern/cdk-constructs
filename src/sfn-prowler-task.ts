@@ -66,15 +66,13 @@ export class SfnProwlerTask extends constructs.Construct {
         "toniblyx/prowler:3.0.2@sha256:5f309251febad2640227d0e4d77a4dc884aeb79f3dc54f4a21b1ee8417c4d3f4",
       ),
       command: [
-        "-M",
+        "aws",
+        "--output-modes",
         "json-asff",
-        "-S", // send to security hub
-        "-z", // successful exit code despite failures
-        "-q", // only send failed checks
-        "-r",
+        "--region",
         region,
-        "-f",
-        region,
+        "--security-hub", // send to security hub
+        "--quiet", // only send failed checks
       ],
     })
     taskDefinition.taskRole.addManagedPolicy(
