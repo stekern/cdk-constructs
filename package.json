@@ -34,7 +34,7 @@
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.50.0-alpha.0",
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.3",
-    "@octokit/types": "7.1.0",
+    "@octokit/types": "8.2.0",
     "@octokit/webhooks-types": "6.5.0",
     "@tsconfig/node16": "1.0.3",
     "@types/aws-lambda": "8.10.102",
