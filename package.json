@@ -39,7 +39,7 @@
     "@tsconfig/node16": "1.0.3",
     "@types/aws-lambda": "8.10.110",
     "@types/jest": "29.4.0",
-    "@types/node": "16.11.51",
+    "@types/node": "16.18.12",
     "@typescript-eslint/eslint-plugin": "5.33.1",
     "@typescript-eslint/parser": "5.33.1",
     "aws-cdk": "2.66.0",
