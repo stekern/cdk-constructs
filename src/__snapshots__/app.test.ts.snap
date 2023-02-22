@@ -266,7 +266,7 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "1ba9fa9b9e73e260677a5c28bd5de1ddc22287d6e5ced9b5655aa4f974ed78ea.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Environment": {
           "Variables": {
@@ -563,7 +563,7 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "fff5d36f48fc23c744e69f708a5ae22e6bb4a610ca5d6465f0254a71360b6460.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Environment": {
           "Variables": {
@@ -1304,7 +1304,7 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "fc95099001df791b05d5d39e1623a93d161fa0e83cdbff8cae36899acc1a943e.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Environment": {
           "Variables": {
@@ -1516,7 +1516,7 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -1972,7 +1972,7 @@ exports[`GitHubPushWebhookApi should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "84988341b2fb08abddca832aa752964586621d00d830a3474899bff37761604a.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Environment": {
           "Variables": {
@@ -2165,7 +2165,7 @@ exports[`GitHubPushWebhookApi should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -2340,7 +2340,7 @@ exports[`GitHubWorkflowRunWebhookApi should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -2707,7 +2707,7 @@ exports[`GitHubWorkflowRunWebhookApi should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "030dd2635f71d898d5ef3852238d0942f79b093530284543414b1ec70c7818f7.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Environment": {
           "Variables": {
@@ -3083,7 +3083,7 @@ exports[`SfnProwlerTask should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "e845402ce43b66fc6f20df4a239f20f8662eb6c7f920b94cf6542dd0e64ce0f7.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -3936,7 +3936,7 @@ exports[`WebSocketApi should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -4038,7 +4038,7 @@ exports[`WebSocketApi should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "c57eb1f1857f78ceae792358d7c837053e6d610c858997e9397bbe13f52dbcdc.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Environment": {
           "Variables": {
@@ -4189,7 +4189,7 @@ exports[`WebSocketApi should match snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6d0f7199160745ada31a7cf5377cde94bc4d261d0c25806452edc38cbc1e4b78.zip",
+          "S3Key": "<sha256-placeholder>.zip",
         },
         "Environment": {
           "Variables": {
