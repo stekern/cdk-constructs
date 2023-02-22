@@ -107,7 +107,7 @@ export class GitHubPushWebhookApi extends constructs.Construct {
     this.webhookApi = api
 
     if (props.tracingEnabled) {
-      ; (
+      ;(
         api.deploymentStage.node.defaultChild as apigateway.CfnStage
       ).addPropertyOverride("TracingEnabled", true)
     }

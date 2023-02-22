@@ -1,6 +1,10 @@
 {
   "extends": ["config:base"],
-  "automerge": false,
+  "automerge": true,
+  "automergeType": "branch",
+  "major": {
+    "automerge": false
+  },
   "regexManagers": [
     {
       "fileMatch": ".*\\.ts$",

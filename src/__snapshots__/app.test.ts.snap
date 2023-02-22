@@ -1,0 +1,4567 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GitHubCookieAuth should match snapshot 1`] = `
+{
+  "Outputs": {
+    "ApiEndpoint4F160690": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "ApiF70053CD",
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            {
+              "Ref": "ApiDeploymentStageprod3EB9684E",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+    "GitHubCookieAuthProxyApiEndpointB8E83712": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "GitHubCookieAuthProxyApi7C85E057",
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            {
+              "Ref": "GitHubCookieAuthProxyApiDeploymentStageprod1073AD87",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "ApiAccountA18C9B29": {
+      "DeletionPolicy": "Retain",
+      "DependsOn": [
+        "ApiF70053CD",
+      ],
+      "Properties": {
+        "CloudWatchRoleArn": {
+          "Fn::GetAtt": [
+            "ApiCloudWatchRole73EC6FC4",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ApiCloudWatchRole73EC6FC4": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ApiDeploymentB17BE62Dbc24e6985dddc8908ea876708611aedf": {
+      "DependsOn": [
+        "ApiGET9257B917",
+      ],
+      "Properties": {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": {
+          "Ref": "ApiF70053CD",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "ApiDeploymentStageprod3EB9684E": {
+      "DependsOn": [
+        "ApiAccountA18C9B29",
+      ],
+      "Properties": {
+        "DeploymentId": {
+          "Ref": "ApiDeploymentB17BE62Dbc24e6985dddc8908ea876708611aedf",
+        },
+        "RestApiId": {
+          "Ref": "ApiF70053CD",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "ApiF70053CD": {
+      "Properties": {
+        "Name": "Api",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "ApiGET9257B917": {
+      "Properties": {
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "GitHubCookieAuthAuthorizer91D54674",
+        },
+        "HttpMethod": "GET",
+        "Integration": {
+          "Type": "MOCK",
+        },
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "ApiF70053CD",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": {
+          "Ref": "ApiF70053CD",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "Certificate4E7ABB08": {
+      "Properties": {
+        "DomainName": "*.example.com",
+        "DomainValidationOptions": [
+          {
+            "DomainName": "*.example.com",
+            "HostedZoneId": "/hostedzone/ABCDEF12345678",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Certificate",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "ClientCredentialsEC83A0CF": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "GitHubCookieAuthAuthorizer91D54674": {
+      "Properties": {
+        "AuthorizerResultTtlInSeconds": 900,
+        "AuthorizerUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Fn::GetAtt": [
+                          "GitHubCookieAuthAuthorizerLambdaAB9AED49",
+                          "Arn",
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              ":apigateway:",
+              {
+                "Fn::Select": [
+                  3,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Fn::GetAtt": [
+                          "GitHubCookieAuthAuthorizerLambdaAB9AED49",
+                          "Arn",
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "GitHubCookieAuthAuthorizerLambdaAB9AED49",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+        "IdentitySource": "method.request.header.Cookie",
+        "Name": "StackGitHubCookieAuthAuthorizerB6B3B6C5",
+        "RestApiId": {
+          "Ref": "ApiF70053CD",
+        },
+        "Type": "REQUEST",
+      },
+      "Type": "AWS::ApiGateway::Authorizer",
+    },
+    "GitHubCookieAuthAuthorizerLambdaAB9AED49": {
+      "DependsOn": [
+        "GitHubCookieAuthAuthorizerLambdaServiceRoleDefaultPolicy2665F2BC",
+        "GitHubCookieAuthAuthorizerLambdaServiceRole9D289F96",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "1ba9fa9b9e73e260677a5c28bd5de1ddc22287d6e5ced9b5655aa4f974ed78ea.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "ACCESS_CONTROL": "{"type":"USERNAME","whitelist":["user"]}",
+            "ALLOWED_ORIGIN": "https://app.example.com",
+            "AUTHORIZER_CACHE_TABLE_NAME": {
+              "Ref": "GitHubCookieAuthCacheTable395CB977",
+            },
+            "AUTHORIZER_CACHE_TTL": "900",
+            "AUTH_COOKIE_ENCRYPTION_KEY_ARN": {
+              "Fn::GetAtt": [
+                "Key961B73FD",
+                "Arn",
+              ],
+            },
+            "AUTH_COOKIE_NAME": "token",
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "GITHUB_APP_ID": "123456",
+            "SECRET_NAME": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Fn::Select": [
+                      0,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "ClientCredentialsEC83A0CF",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    "Fn::Select": [
+                      1,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "ClientCredentialsEC83A0CF",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthAuthorizerLambdaServiceRole9D289F96",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 10,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "GitHubCookieAuthAuthorizerLambdaLogRetention2CDCE966": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "GitHubCookieAuthAuthorizerLambdaAB9AED49",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 30,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "GitHubCookieAuthAuthorizerLambdaServiceRole9D289F96": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubCookieAuthAuthorizerLambdaServiceRoleDefaultPolicy2665F2BC": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "GitHubCookieAuthCacheTable395CB977",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "ClientCredentialsEC83A0CF",
+              },
+            },
+            {
+              "Action": "kms:Decrypt",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "Key961B73FD",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GitHubCookieAuthAuthorizerLambdaServiceRoleDefaultPolicy2665F2BC",
+        "Roles": [
+          {
+            "Ref": "GitHubCookieAuthAuthorizerLambdaServiceRole9D289F96",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GitHubCookieAuthAuthorizerLambdaStackGitHubCookieAuthAuthorizerB6B3B6C5Permissions89FBBD49": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthAuthorizerLambdaAB9AED49",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "ApiF70053CD",
+              },
+              "/authorizers/",
+              {
+                "Ref": "GitHubCookieAuthAuthorizer91D54674",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GitHubCookieAuthCacheTable395CB977": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "PK",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "SK",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "PK",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "SK",
+            "KeyType": "RANGE",
+          },
+        ],
+        "TimeToLiveSpecification": {
+          "AttributeName": "ttl",
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "GitHubCookieAuthCallbackFn6CD3A657": {
+      "DependsOn": [
+        "GitHubCookieAuthCallbackFnServiceRoleDefaultPolicyC09A6350",
+        "GitHubCookieAuthCallbackFnServiceRoleC5B6DFDE",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "fff5d36f48fc23c744e69f708a5ae22e6bb4a610ca5d6465f0254a71360b6460.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AUTH_COOKIE_ATTRIBUTES": "Secure; HttpOnly; SameSite=Strict; Domain=example.com",
+            "AUTH_COOKIE_ENCRYPTION_KEY_ARN": {
+              "Fn::GetAtt": [
+                "Key961B73FD",
+                "Arn",
+              ],
+            },
+            "AUTH_COOKIE_NAME": "token",
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "NONCE_COOKIE_NAME": "nonce",
+            "REDIRECT_URL": "https://app.example.com",
+            "RESPONSE_HEADERS": "{"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD","Access-Control-Allow-Origin":"https://app.example.com"}",
+            "SECRET_NAME": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Fn::Select": [
+                      0,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "ClientCredentialsEC83A0CF",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    "Fn::Select": [
+                      1,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "ClientCredentialsEC83A0CF",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthCallbackFnServiceRoleC5B6DFDE",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 10,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "GitHubCookieAuthCallbackFnLogRetention94C18441": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "GitHubCookieAuthCallbackFn6CD3A657",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 30,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "GitHubCookieAuthCallbackFnServiceRoleC5B6DFDE": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubCookieAuthCallbackFnServiceRoleDefaultPolicyC09A6350": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "ClientCredentialsEC83A0CF",
+              },
+            },
+            {
+              "Action": [
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "Key961B73FD",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GitHubCookieAuthCallbackFnServiceRoleDefaultPolicyC09A6350",
+        "Roles": [
+          {
+            "Ref": "GitHubCookieAuthCallbackFnServiceRoleC5B6DFDE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GitHubCookieAuthProxyApi7C85E057": {
+      "Properties": {
+        "DisableExecuteApiEndpoint": true,
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE",
+          ],
+        },
+        "Name": "ProxyApi",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "GitHubCookieAuthProxyApiAccountB7DB5672": {
+      "DeletionPolicy": "Retain",
+      "DependsOn": [
+        "GitHubCookieAuthProxyApi7C85E057",
+      ],
+      "Properties": {
+        "CloudWatchRoleArn": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthProxyApiCloudWatchRoleF133A1FD",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "GitHubCookieAuthProxyApiCloudWatchRoleF133A1FD": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "GitHubCookieAuthProxyApiCustomDomain32B7C305": {
+      "Properties": {
+        "CertificateArn": {
+          "Ref": "Certificate4E7ABB08",
+        },
+        "DomainName": "auth.example.com",
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::DomainName",
+    },
+    "GitHubCookieAuthProxyApiCustomDomainMapStackGitHubCookieAuthProxyApi14BE3A90258BBCB2": {
+      "Properties": {
+        "DomainName": {
+          "Ref": "GitHubCookieAuthProxyApiCustomDomain32B7C305",
+        },
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+        "Stage": {
+          "Ref": "GitHubCookieAuthProxyApiDeploymentStageprod1073AD87",
+        },
+      },
+      "Type": "AWS::ApiGateway::BasePathMapping",
+    },
+    "GitHubCookieAuthProxyApiDeployment9A7DE05E9a23b4b9a3bb586eab85599442526bf9": {
+      "DependsOn": [
+        "GitHubCookieAuthProxyApicallbackGET26B31985",
+        "GitHubCookieAuthProxyApicallbackOPTIONSEEA60090",
+        "GitHubCookieAuthProxyApicallback02B08A52",
+        "GitHubCookieAuthProxyApiOPTIONSAA935303",
+        "GitHubCookieAuthProxyApirequestGETE5F7FF88",
+        "GitHubCookieAuthProxyApirequestOPTIONS05D8CC93",
+        "GitHubCookieAuthProxyApirequest6FDC6B46",
+      ],
+      "Properties": {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "GitHubCookieAuthProxyApiDeploymentStageprod1073AD87": {
+      "DependsOn": [
+        "GitHubCookieAuthProxyApiAccountB7DB5672",
+      ],
+      "Properties": {
+        "DeploymentId": {
+          "Ref": "GitHubCookieAuthProxyApiDeployment9A7DE05E9a23b4b9a3bb586eab85599442526bf9",
+        },
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+        "StageName": "prod",
+        "TracingEnabled": true,
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "GitHubCookieAuthProxyApiOPTIONSAA935303": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Credentials": "'true'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                "method.response.header.Access-Control-Allow-Origin": "'https://app.example.com'",
+                "method.response.header.Vary": "'Origin'",
+              },
+              "StatusCode": "204",
+            },
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }",
+          },
+          "Type": "MOCK",
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Credentials": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Vary": true,
+            },
+            "StatusCode": "204",
+          },
+        ],
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthProxyApi7C85E057",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "GitHubCookieAuthProxyApicallback02B08A52": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthProxyApi7C85E057",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "callback",
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "GitHubCookieAuthProxyApicallbackGET26B31985": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GitHubCookieAuthCallbackFn6CD3A657",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "GitHubCookieAuthProxyApicallback02B08A52",
+        },
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "GitHubCookieAuthProxyApicallbackGETApiPermissionStackGitHubCookieAuthProxyApi14BE3A90GETcallback14A93723": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthCallbackFn6CD3A657",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "GitHubCookieAuthProxyApi7C85E057",
+              },
+              "/",
+              {
+                "Ref": "GitHubCookieAuthProxyApiDeploymentStageprod1073AD87",
+              },
+              "/GET/callback",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GitHubCookieAuthProxyApicallbackGETApiPermissionTestStackGitHubCookieAuthProxyApi14BE3A90GETcallback83287BDD": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthCallbackFn6CD3A657",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "GitHubCookieAuthProxyApi7C85E057",
+              },
+              "/test-invoke-stage/GET/callback",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GitHubCookieAuthProxyApicallbackOPTIONSEEA60090": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Credentials": "'true'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                "method.response.header.Access-Control-Allow-Origin": "'https://app.example.com'",
+                "method.response.header.Vary": "'Origin'",
+              },
+              "StatusCode": "204",
+            },
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }",
+          },
+          "Type": "MOCK",
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Credentials": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Vary": true,
+            },
+            "StatusCode": "204",
+          },
+        ],
+        "ResourceId": {
+          "Ref": "GitHubCookieAuthProxyApicallback02B08A52",
+        },
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "GitHubCookieAuthProxyApirequest6FDC6B46": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthProxyApi7C85E057",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "request",
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "GitHubCookieAuthProxyApirequestGETApiPermissionStackGitHubCookieAuthProxyApi14BE3A90GETrequest9EC0572C": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthRequestLambda670E4A19",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "GitHubCookieAuthProxyApi7C85E057",
+              },
+              "/",
+              {
+                "Ref": "GitHubCookieAuthProxyApiDeploymentStageprod1073AD87",
+              },
+              "/GET/request",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GitHubCookieAuthProxyApirequestGETApiPermissionTestStackGitHubCookieAuthProxyApi14BE3A90GETrequest7991E520": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthRequestLambda670E4A19",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "GitHubCookieAuthProxyApi7C85E057",
+              },
+              "/test-invoke-stage/GET/request",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GitHubCookieAuthProxyApirequestGETE5F7FF88": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GitHubCookieAuthRequestLambda670E4A19",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "GitHubCookieAuthProxyApirequest6FDC6B46",
+        },
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "GitHubCookieAuthProxyApirequestOPTIONS05D8CC93": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Credentials": "'true'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                "method.response.header.Access-Control-Allow-Origin": "'https://app.example.com'",
+                "method.response.header.Vary": "'Origin'",
+              },
+              "StatusCode": "204",
+            },
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }",
+          },
+          "Type": "MOCK",
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Credentials": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Vary": true,
+            },
+            "StatusCode": "204",
+          },
+        ],
+        "ResourceId": {
+          "Ref": "GitHubCookieAuthProxyApirequest6FDC6B46",
+        },
+        "RestApiId": {
+          "Ref": "GitHubCookieAuthProxyApi7C85E057",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "GitHubCookieAuthRecord5A4D4458": {
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "GitHubCookieAuthProxyApiCustomDomain32B7C305",
+              "DistributionDomainName",
+            ],
+          },
+          "HostedZoneId": {
+            "Fn::GetAtt": [
+              "GitHubCookieAuthProxyApiCustomDomain32B7C305",
+              "DistributionHostedZoneId",
+            ],
+          },
+        },
+        "HostedZoneId": "/hostedzone/ABCDEF12345678",
+        "Name": "auth.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "GitHubCookieAuthRequestLambda670E4A19": {
+      "DependsOn": [
+        "GitHubCookieAuthRequestLambdaServiceRoleDefaultPolicy8AB18A0A",
+        "GitHubCookieAuthRequestLambdaServiceRoleA6BF3DEF",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "fc95099001df791b05d5d39e1623a93d161fa0e83cdbff8cae36899acc1a943e.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "CALLBACK_URL": "https://auth.example.com/callback",
+            "NONCE_COOKIE_ATTRIBUTES": "Secure; HttpOnly; SameSite=Lax",
+            "NONCE_COOKIE_NAME": "nonce",
+            "RESPONSE_HEADERS": "{"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD","Access-Control-Allow-Origin":"https://app.example.com"}",
+            "SECRET_NAME": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Fn::Select": [
+                      0,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "ClientCredentialsEC83A0CF",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    "Fn::Select": [
+                      1,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "ClientCredentialsEC83A0CF",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "GitHubCookieAuthRequestLambdaServiceRoleA6BF3DEF",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 10,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "GitHubCookieAuthRequestLambdaLogRetentionED7801A8": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "GitHubCookieAuthRequestLambda670E4A19",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 30,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "GitHubCookieAuthRequestLambdaServiceRoleA6BF3DEF": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubCookieAuthRequestLambdaServiceRoleDefaultPolicy8AB18A0A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "ClientCredentialsEC83A0CF",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GitHubCookieAuthRequestLambdaServiceRoleDefaultPolicy8AB18A0A",
+        "Roles": [
+          {
+            "Ref": "GitHubCookieAuthRequestLambdaServiceRoleA6BF3DEF",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Key961B73FD": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`GitHubPushWebhookApi should match snapshot 1`] = `
+{
+  "Outputs": {
+    "GitHubPushWebhookApiEndpointA86987D6": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "GitHubPushWebhookApi7BE17FFA",
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            {
+              "Ref": "GitHubPushWebhookApiDeploymentStageprod63078991",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "Certificate4E7ABB08": {
+      "Properties": {
+        "DomainName": "*.example.com",
+        "DomainValidationOptions": [
+          {
+            "DomainName": "*.example.com",
+            "HostedZoneId": "/hostedzone/ABCDEF12345678",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Certificate",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "GitHubPushWebhookApi7BE17FFA": {
+      "Properties": {
+        "DisableExecuteApiEndpoint": true,
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL",
+          ],
+        },
+        "Name": "WebhookApi",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "GitHubPushWebhookApiAccount46267DBA": {
+      "DeletionPolicy": "Retain",
+      "DependsOn": [
+        "GitHubPushWebhookApi7BE17FFA",
+      ],
+      "Properties": {
+        "CloudWatchRoleArn": {
+          "Fn::GetAtt": [
+            "GitHubPushWebhookApiCloudWatchRole59C87BB8",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "GitHubPushWebhookApiCloudWatchRole59C87BB8": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "GitHubPushWebhookApiCustomDomainB7329A1B": {
+      "Properties": {
+        "DomainName": "example.com",
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL",
+          ],
+        },
+        "RegionalCertificateArn": {
+          "Ref": "Certificate4E7ABB08",
+        },
+      },
+      "Type": "AWS::ApiGateway::DomainName",
+    },
+    "GitHubPushWebhookApiCustomDomainMapStackGitHubPushWebhookApi27B2DFF43B421488": {
+      "Properties": {
+        "DomainName": {
+          "Ref": "GitHubPushWebhookApiCustomDomainB7329A1B",
+        },
+        "RestApiId": {
+          "Ref": "GitHubPushWebhookApi7BE17FFA",
+        },
+        "Stage": {
+          "Ref": "GitHubPushWebhookApiDeploymentStageprod63078991",
+        },
+      },
+      "Type": "AWS::ApiGateway::BasePathMapping",
+    },
+    "GitHubPushWebhookApiDeployment38A0D6D7a526d666ba71267fd573b8b9ce69383f": {
+      "DependsOn": [
+        "GitHubPushWebhookApiPOSTD06706F0",
+      ],
+      "Properties": {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": {
+          "Ref": "GitHubPushWebhookApi7BE17FFA",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "GitHubPushWebhookApiDeploymentStageprod63078991": {
+      "DependsOn": [
+        "GitHubPushWebhookApiAccount46267DBA",
+      ],
+      "Properties": {
+        "DeploymentId": {
+          "Ref": "GitHubPushWebhookApiDeployment38A0D6D7a526d666ba71267fd573b8b9ce69383f",
+        },
+        "RestApiId": {
+          "Ref": "GitHubPushWebhookApi7BE17FFA",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "GitHubPushWebhookApiGitHubPushTable2ECBC1E6": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "PK",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "SK",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "PK",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "SK",
+            "KeyType": "RANGE",
+          },
+        ],
+        "StreamSpecification": {
+          "StreamViewType": "NEW_IMAGE",
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "GitHubPushWebhookApiPOSTApiPermissionStackGitHubPushWebhookApi27B2DFF4POSTF9648FDB": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GitHubPushWebhookApiWebhookReceiverLambda1342EEC4",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "GitHubPushWebhookApi7BE17FFA",
+              },
+              "/",
+              {
+                "Ref": "GitHubPushWebhookApiDeploymentStageprod63078991",
+              },
+              "/POST/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GitHubPushWebhookApiPOSTApiPermissionTestStackGitHubPushWebhookApi27B2DFF4POST1EF2EA52": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GitHubPushWebhookApiWebhookReceiverLambda1342EEC4",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "GitHubPushWebhookApi7BE17FFA",
+              },
+              "/test-invoke-stage/POST/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GitHubPushWebhookApiPOSTD06706F0": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GitHubPushWebhookApiWebhookReceiverLambda1342EEC4",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "GitHubPushWebhookApi7BE17FFA",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": {
+          "Ref": "GitHubPushWebhookApi7BE17FFA",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "GitHubPushWebhookApiRecord48F3D76D": {
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "GitHubPushWebhookApiCustomDomainB7329A1B",
+              "RegionalDomainName",
+            ],
+          },
+          "HostedZoneId": {
+            "Fn::GetAtt": [
+              "GitHubPushWebhookApiCustomDomainB7329A1B",
+              "RegionalHostedZoneId",
+            ],
+          },
+        },
+        "HostedZoneId": "/hostedzone/ABCDEF12345678",
+        "Name": "example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "GitHubPushWebhookApiWebhookReceiverLambda1342EEC4": {
+      "DependsOn": [
+        "GitHubPushWebhookApiWebhookReceiverLambdaServiceRoleDefaultPolicy871B2DF1",
+        "GitHubPushWebhookApiWebhookReceiverLambdaServiceRoleB0F7D511",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "84988341b2fb08abddca832aa752964586621d00d830a3474899bff37761604a.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "SECRET_NAME": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Fn::Select": [
+                      0,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "SecretA720EF05",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    "Fn::Select": [
+                      1,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "SecretA720EF05",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+            "TABLE_NAME": {
+              "Ref": "GitHubPushWebhookApiGitHubPushTable2ECBC1E6",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "GitHubPushWebhookApiWebhookReceiverLambdaServiceRoleB0F7D511",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "GitHubPushWebhookApiWebhookReceiverLambdaLogRetention624B6F13": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "GitHubPushWebhookApiWebhookReceiverLambda1342EEC4",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 30,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "GitHubPushWebhookApiWebhookReceiverLambdaServiceRoleB0F7D511": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubPushWebhookApiWebhookReceiverLambdaServiceRoleDefaultPolicy871B2DF1": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "SecretA720EF05",
+              },
+            },
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "GitHubPushWebhookApiGitHubPushTable2ECBC1E6",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GitHubPushWebhookApiWebhookReceiverLambdaServiceRoleDefaultPolicy871B2DF1",
+        "Roles": [
+          {
+            "Ref": "GitHubPushWebhookApiWebhookReceiverLambdaServiceRoleB0F7D511",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "SecretA720EF05": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Description": "Secret token used for validating webhook requests from GitHub",
+        "GenerateSecretString": {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`GitHubWorkflowRunWebhookApi should match snapshot 1`] = `
+{
+  "Outputs": {
+    "WebhookApiEndpointA9007BA4": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "WebhookApi6CC9DD23",
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            {
+              "Ref": "WebhookApiDeploymentStageprod189573F5",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "Certificate4E7ABB08": {
+      "Properties": {
+        "DomainName": "*.example.com",
+        "DomainValidationOptions": [
+          {
+            "DomainName": "*.example.com",
+            "HostedZoneId": "/hostedzone/ABCDEF12345678",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Certificate",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TableCD117FA1": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "PK",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "SK",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "PK",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "SK",
+            "KeyType": "RANGE",
+          },
+        ],
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "WebhookApi6CC9DD23": {
+      "Properties": {
+        "DisableExecuteApiEndpoint": true,
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE",
+          ],
+        },
+        "Name": "WebhookApi",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "WebhookApiANYApiPermissionStackWebhookApi549DBB5EANY531B2DBB": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "WebhookApiWebhookReceiverLambdaE8B7F832",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "WebhookApi6CC9DD23",
+              },
+              "/",
+              {
+                "Ref": "WebhookApiDeploymentStageprod189573F5",
+              },
+              "/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebhookApiANYApiPermissionTestStackWebhookApi549DBB5EANYCEEB5218": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "WebhookApiWebhookReceiverLambdaE8B7F832",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "WebhookApi6CC9DD23",
+              },
+              "/test-invoke-stage/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebhookApiANYC724D9C3": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "WebhookApiWebhookReceiverLambdaE8B7F832",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "WebhookApi6CC9DD23",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": {
+          "Ref": "WebhookApi6CC9DD23",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "WebhookApiAccount2F69857D": {
+      "DeletionPolicy": "Retain",
+      "DependsOn": [
+        "WebhookApi6CC9DD23",
+      ],
+      "Properties": {
+        "CloudWatchRoleArn": {
+          "Fn::GetAtt": [
+            "WebhookApiCloudWatchRole90C672AB",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "WebhookApiCloudWatchRole90C672AB": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "WebhookApiCustomDomain33E512A8": {
+      "Properties": {
+        "CertificateArn": {
+          "Ref": "Certificate4E7ABB08",
+        },
+        "DomainName": "hooks.example.com",
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::DomainName",
+    },
+    "WebhookApiCustomDomainMapStackWebhookApi549DBB5E3AB37164": {
+      "Properties": {
+        "DomainName": {
+          "Ref": "WebhookApiCustomDomain33E512A8",
+        },
+        "RestApiId": {
+          "Ref": "WebhookApi6CC9DD23",
+        },
+        "Stage": {
+          "Ref": "WebhookApiDeploymentStageprod189573F5",
+        },
+      },
+      "Type": "AWS::ApiGateway::BasePathMapping",
+    },
+    "WebhookApiDeployment78952FFB8bdf379f09cc6c4b7437d486e452e7dc": {
+      "DependsOn": [
+        "WebhookApiproxyANYE78275E3",
+        "WebhookApiproxyB64A6FF2",
+        "WebhookApiANYC724D9C3",
+      ],
+      "Properties": {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": {
+          "Ref": "WebhookApi6CC9DD23",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "WebhookApiDeploymentStageprod189573F5": {
+      "DependsOn": [
+        "WebhookApiAccount2F69857D",
+      ],
+      "Properties": {
+        "DeploymentId": {
+          "Ref": "WebhookApiDeployment78952FFB8bdf379f09cc6c4b7437d486e452e7dc",
+        },
+        "RestApiId": {
+          "Ref": "WebhookApi6CC9DD23",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "WebhookApiRecordF9471B97": {
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "WebhookApiCustomDomain33E512A8",
+              "DistributionDomainName",
+            ],
+          },
+          "HostedZoneId": {
+            "Fn::GetAtt": [
+              "WebhookApiCustomDomain33E512A8",
+              "DistributionHostedZoneId",
+            ],
+          },
+        },
+        "HostedZoneId": "/hostedzone/ABCDEF12345678",
+        "Name": "hooks.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "WebhookApiWebhookReceiverLambdaE8B7F832": {
+      "DependsOn": [
+        "WebhookApiWebhookReceiverLambdaServiceRoleDefaultPolicyB421A631",
+        "WebhookApiWebhookReceiverLambdaServiceRole11D4E583",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "030dd2635f71d898d5ef3852238d0942f79b093530284543414b1ec70c7818f7.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "GITHUB_APP_ID": "123456",
+            "SECRET_NAME": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Fn::Select": [
+                      0,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "WebhookTokenSecretBFD7CBC1",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    "Fn::Select": [
+                      1,
+                      {
+                        "Fn::Split": [
+                          "-",
+                          {
+                            "Fn::Select": [
+                              6,
+                              {
+                                "Fn::Split": [
+                                  ":",
+                                  {
+                                    "Ref": "WebhookTokenSecretBFD7CBC1",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+            "TABLE_NAME": {
+              "Ref": "TableCD117FA1",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "WebhookApiWebhookReceiverLambdaServiceRole11D4E583",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "WebhookApiWebhookReceiverLambdaLogRetentionBB26A972": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "WebhookApiWebhookReceiverLambdaE8B7F832",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 30,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "WebhookApiWebhookReceiverLambdaServiceRole11D4E583": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "WebhookApiWebhookReceiverLambdaServiceRoleDefaultPolicyB421A631": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "WebhookTokenSecretBFD7CBC1",
+              },
+            },
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "TableCD117FA1",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "WebhookApiWebhookReceiverLambdaServiceRoleDefaultPolicyB421A631",
+        "Roles": [
+          {
+            "Ref": "WebhookApiWebhookReceiverLambdaServiceRole11D4E583",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WebhookApiproxyANYApiPermissionStackWebhookApi549DBB5EANYproxyA8543061": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "WebhookApiWebhookReceiverLambdaE8B7F832",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "WebhookApi6CC9DD23",
+              },
+              "/",
+              {
+                "Ref": "WebhookApiDeploymentStageprod189573F5",
+              },
+              "/*/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebhookApiproxyANYApiPermissionTestStackWebhookApi549DBB5EANYproxy8D436FC7": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "WebhookApiWebhookReceiverLambdaE8B7F832",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "WebhookApi6CC9DD23",
+              },
+              "/test-invoke-stage/*/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebhookApiproxyANYE78275E3": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "WebhookApiWebhookReceiverLambdaE8B7F832",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "WebhookApiproxyB64A6FF2",
+        },
+        "RestApiId": {
+          "Ref": "WebhookApi6CC9DD23",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "WebhookApiproxyB64A6FF2": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "WebhookApi6CC9DD23",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "{proxy+}",
+        "RestApiId": {
+          "Ref": "WebhookApi6CC9DD23",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "WebhookTokenSecretBFD7CBC1": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Description": "Secret token used for validating webhook requests from GitHub",
+        "GenerateSecretString": {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`SfnProwlerTask should match snapshot 1`] = `
+{
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
+      "DependsOn": [
+        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "e845402ce43b66fc6f20df4a239f20f8662eb6c7f920b94cf6542dd0e64ce0f7.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterEB0386A7": {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "ClusterVpcFAA3CEDF": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "ClusterVpcIGW1E358A6E": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "ClusterVpcPrivateSubnet1DefaultRoute3B4D40DD": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "ClusterVpcPublicSubnet1NATGateway0693C346",
+        },
+        "RouteTableId": {
+          "Ref": "ClusterVpcPrivateSubnet1RouteTable5AAEDA3F",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "ClusterVpcPrivateSubnet1RouteTable5AAEDA3F": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "ClusterVpcPrivateSubnet1RouteTableAssociation9B8A88D9": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPrivateSubnet1RouteTable5AAEDA3F",
+        },
+        "SubnetId": {
+          "Ref": "ClusterVpcPrivateSubnet1SubnetA4EB481A",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "ClusterVpcPrivateSubnet1SubnetA4EB481A": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.128.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "ClusterVpcPrivateSubnet2DefaultRoute011666AF": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "ClusterVpcPublicSubnet2NATGateway00B24686",
+        },
+        "RouteTableId": {
+          "Ref": "ClusterVpcPrivateSubnet2RouteTable73064A66",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "ClusterVpcPrivateSubnet2RouteTable73064A66": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "ClusterVpcPrivateSubnet2RouteTableAssociationFB21349E": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPrivateSubnet2RouteTable73064A66",
+        },
+        "SubnetId": {
+          "Ref": "ClusterVpcPrivateSubnet2SubnetBD1ECB6E",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "ClusterVpcPrivateSubnet2SubnetBD1ECB6E": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.192.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "ClusterVpcPublicSubnet1DefaultRoute62DA4B4B": {
+      "DependsOn": [
+        "ClusterVpcVPCGW47AC17E9",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "ClusterVpcIGW1E358A6E",
+        },
+        "RouteTableId": {
+          "Ref": "ClusterVpcPublicSubnet1RouteTable5594A636",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "ClusterVpcPublicSubnet1EIP433C56EE": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "ClusterVpcPublicSubnet1NATGateway0693C346": {
+      "DependsOn": [
+        "ClusterVpcPublicSubnet1DefaultRoute62DA4B4B",
+        "ClusterVpcPublicSubnet1RouteTableAssociation0FBEF1F4",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "ClusterVpcPublicSubnet1EIP433C56EE",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet1SubnetA9F7E0A5",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "ClusterVpcPublicSubnet1RouteTable5594A636": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "ClusterVpcPublicSubnet1RouteTableAssociation0FBEF1F4": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPublicSubnet1RouteTable5594A636",
+        },
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet1SubnetA9F7E0A5",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "ClusterVpcPublicSubnet1SubnetA9F7E0A5": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "ClusterVpcPublicSubnet2DefaultRoute97446C8A": {
+      "DependsOn": [
+        "ClusterVpcVPCGW47AC17E9",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "ClusterVpcIGW1E358A6E",
+        },
+        "RouteTableId": {
+          "Ref": "ClusterVpcPublicSubnet2RouteTable7B43F18C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "ClusterVpcPublicSubnet2EIP203DF3E5": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "ClusterVpcPublicSubnet2NATGateway00B24686": {
+      "DependsOn": [
+        "ClusterVpcPublicSubnet2DefaultRoute97446C8A",
+        "ClusterVpcPublicSubnet2RouteTableAssociation8446B27D",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "ClusterVpcPublicSubnet2EIP203DF3E5",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet2Subnet059113C4",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "ClusterVpcPublicSubnet2RouteTable7B43F18C": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "ClusterVpcPublicSubnet2RouteTableAssociation8446B27D": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPublicSubnet2RouteTable7B43F18C",
+        },
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet2Subnet059113C4",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "ClusterVpcPublicSubnet2Subnet059113C4": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.64.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "Stack/Cluster/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "ClusterVpcVPCGW47AC17E9": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "ClusterVpcIGW1E358A6E",
+        },
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "ProwlerTaskFargateTaskSecurityGroupAAF49A89": {
+      "Properties": {
+        "GroupDescription": "Stack/ProwlerTask/FargateTask/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ProwlerTaskProwlerAdditionalPolicy894379D3": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ds:ListAuthorizedApplications",
+                "ec2:GetEbsEncryptionByDefault",
+                "ecr:Describe*",
+                "elasticfilesystem:DescribeBackupPolicy",
+                "glue:GetConnections",
+                "glue:GetSecurityConfiguration",
+                "glue:SearchTables",
+                "lambda:GetFunction",
+                "s3:GetAccountPublicAccessBlock",
+                "shield:DescribeProtection",
+                "shield:GetSubscriptionState",
+                "ssm:GetDocument",
+                "support:Describe*",
+                "tag:GetTagKeys",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "securityhub:BatchImportFindings",
+                "securityhub:GetFindings",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:securityhub:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    "::product/prowler/prowler",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "securityhub:GetFindings",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ProwlerTaskProwlerAdditionalPolicy894379D3",
+        "Roles": [
+          {
+            "Ref": "ProwlerTaskTaskDefinitionTaskRoleDD250681",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ProwlerTaskSecurityHubProwlerIntegration5F0B21AF": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "ProwlerTaskSecurityHubProwlerIntegrationCustomResourcePolicy81A94EC0",
+      ],
+      "Properties": {
+        "Create": {
+          "Fn::Join": [
+            "",
+            [
+              "{"service":"SecurityHub","action":"enableImportFindingsForProduct","parameters":{"ProductArn":"arn:aws:securityhub:",
+              {
+                "Ref": "AWS::Region",
+              },
+              "::product/prowler/prowler"},"physicalResourceId":{"id":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              ""}}",
+            ],
+          ],
+        },
+        "Delete": {
+          "Fn::Join": [
+            "",
+            [
+              "{"service":"SecurityHub","action":"disableImportFindingsForProduct","parameters":{"ProductSubscriptionArn":"arn:aws:securityhub:",
+              {
+                "Ref": "AWS::Region",
+              },
+              "::product-subscription/prowler/prowler"}}",
+            ],
+          ],
+        },
+        "InstallLatestAwsSdk": true,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn",
+          ],
+        },
+        "Update": {
+          "Fn::Join": [
+            "",
+            [
+              "{"service":"SecurityHub","action":"enableImportFindingsForProduct","parameters":{"ProductArn":"arn:aws:securityhub:",
+              {
+                "Ref": "AWS::Region",
+              },
+              "::product/prowler/prowler"},"physicalResourceId":{"id":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              ""}}",
+            ],
+          ],
+        },
+      },
+      "Type": "Custom::AWS",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ProwlerTaskSecurityHubProwlerIntegrationCustomResourcePolicy81A94EC0": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "securityhub:EnableImportFindingsForProduct",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:securityhub:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":hub/default",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "securityhub:DisableImportFindingsForProduct",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:securityhub:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":hub/default",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ProwlerTaskSecurityHubProwlerIntegrationCustomResourcePolicy81A94EC0",
+        "Roles": [
+          {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ProwlerTaskTaskDefinition0DB6CE90": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "aws",
+              "--output-modes",
+              "json-asff",
+              "--region",
+              {
+                "Ref": "AWS::Region",
+              },
+              "--security-hub",
+              "--quiet",
+            ],
+            "Essential": true,
+            "Image": "toniblyx/prowler:3.0.2@sha256:5f309251febad2640227d0e4d77a4dc884aeb79f3dc54f4a21b1ee8417c4d3f4",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "ProwlerTaskTaskDefinitionmainLogGroupF9136294",
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "prefix",
+              },
+            },
+            "Name": "main",
+          },
+        ],
+        "Cpu": "1024",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "ProwlerTaskTaskDefinitionExecutionRole9072CDF9",
+            "Arn",
+          ],
+        },
+        "Family": "StackProwlerTaskTaskDefinition29B44A1B",
+        "Memory": "2048",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "ProwlerTaskTaskDefinitionTaskRoleDD250681",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ProwlerTaskTaskDefinitionExecutionRole9072CDF9": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ProwlerTaskTaskDefinitionExecutionRoleDefaultPolicy48E9AD56": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ProwlerTaskTaskDefinitionmainLogGroupF9136294",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ProwlerTaskTaskDefinitionExecutionRoleDefaultPolicy48E9AD56",
+        "Roles": [
+          {
+            "Ref": "ProwlerTaskTaskDefinitionExecutionRole9072CDF9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ProwlerTaskTaskDefinitionTaskRoleDD250681": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/SecurityAudit",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/job-function/ViewOnlyAccess",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ProwlerTaskTaskDefinitionmainLogGroupF9136294": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`WebSocketApi should match snapshot 1`] = `
+{
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "Certificate4E7ABB08": {
+      "Properties": {
+        "DomainName": "*.example.com",
+        "DomainValidationOptions": [
+          {
+            "DomainName": "*.example.com",
+            "HostedZoneId": "/hostedzone/ABCDEF12345678",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/Certificate",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WebSocketApi32E01B6B": {
+      "Properties": {
+        "DisableExecuteApiEndpoint": true,
+        "Name": "WebSocketApi",
+        "ProtocolType": "WEBSOCKET",
+        "RouteSelectionExpression": "$request.body.action",
+      },
+      "Type": "AWS::ApiGatewayV2::Api",
+    },
+    "WebSocketApiApiMapping85AE08E7": {
+      "DependsOn": [
+        "WebSocketApiStageC51B50DA",
+      ],
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebSocketApi32E01B6B",
+        },
+        "DomainName": {
+          "Ref": "WebSocketApiDomainName828AC440",
+        },
+        "Stage": "prod",
+      },
+      "Type": "AWS::ApiGatewayV2::ApiMapping",
+    },
+    "WebSocketApiConnectLambda7AF9AEA8": {
+      "DependsOn": [
+        "WebSocketApiConnectLambdaServiceRoleDefaultPolicyAB263650",
+        "WebSocketApiConnectLambdaServiceRole1D3E97E8",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "c57eb1f1857f78ceae792358d7c837053e6d610c858997e9397bbe13f52dbcdc.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "STORE_AUTHORIZER_PROPERTIES": "false",
+            "TABLE_NAME": {
+              "Ref": "WebSocketApiConnectionTable25CA1A9B",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "WebSocketApiConnectLambdaServiceRole1D3E97E8",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "WebSocketApiConnectLambdaLogRetentionED06EF0B": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "WebSocketApiConnectLambda7AF9AEA8",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 30,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "WebSocketApiConnectLambdaServiceRole1D3E97E8": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "WebSocketApiConnectLambdaServiceRoleDefaultPolicyAB263650": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "WebSocketApiConnectionTable25CA1A9B",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "WebSocketApiConnectLambdaServiceRoleDefaultPolicyAB263650",
+        "Roles": [
+          {
+            "Ref": "WebSocketApiConnectLambdaServiceRole1D3E97E8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WebSocketApiConnectionTable25CA1A9B": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "connectionId",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "connectionId",
+            "KeyType": "HASH",
+          },
+        ],
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "WebSocketApiDisconnectLambdaC2566805": {
+      "DependsOn": [
+        "WebSocketApiDisconnectLambdaServiceRoleDefaultPolicy2606D261",
+        "WebSocketApiDisconnectLambdaServiceRoleF93168A3",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "6d0f7199160745ada31a7cf5377cde94bc4d261d0c25806452edc38cbc1e4b78.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "TABLE_NAME": {
+              "Ref": "WebSocketApiConnectionTable25CA1A9B",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "WebSocketApiDisconnectLambdaServiceRoleF93168A3",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "WebSocketApiDisconnectLambdaLogRetention0D35F4B0": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "WebSocketApiDisconnectLambdaC2566805",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 30,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "WebSocketApiDisconnectLambdaServiceRoleDefaultPolicy2606D261": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "WebSocketApiConnectionTable25CA1A9B",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "WebSocketApiDisconnectLambdaServiceRoleDefaultPolicy2606D261",
+        "Roles": [
+          {
+            "Ref": "WebSocketApiDisconnectLambdaServiceRoleF93168A3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WebSocketApiDisconnectLambdaServiceRoleF93168A3": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "WebSocketApiDomainName828AC440": {
+      "Properties": {
+        "DomainName": "socket.example.com",
+        "DomainNameConfigurations": [
+          {
+            "CertificateArn": {
+              "Ref": "Certificate4E7ABB08",
+            },
+            "EndpointType": "REGIONAL",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGatewayV2::DomainName",
+    },
+    "WebSocketApiRecordE0537A52": {
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "WebSocketApiDomainName828AC440",
+              "RegionalDomainName",
+            ],
+          },
+          "HostedZoneId": {
+            "Fn::GetAtt": [
+              "WebSocketApiDomainName828AC440",
+              "RegionalHostedZoneId",
+            ],
+          },
+        },
+        "HostedZoneId": "/hostedzone/ABCDEF12345678",
+        "Name": "socket.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "WebSocketApiStageC51B50DA": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebSocketApi32E01B6B",
+        },
+        "AutoDeploy": true,
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGatewayV2::Stage",
+    },
+    "WebSocketApiconnectRoute7893AC79": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebSocketApi32E01B6B",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "$connect",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "WebSocketApiconnectRouteConnectIntegrationB57148FA",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "WebSocketApiconnectRouteConnectIntegrationB57148FA": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebSocketApi32E01B6B",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "WebSocketApiConnectLambda7AF9AEA8",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "WebSocketApiconnectRouteConnectIntegrationPermissionE699A6A3": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "WebSocketApiConnectLambda7AF9AEA8",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "WebSocketApi32E01B6B",
+              },
+              "/*/*$connect",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebSocketApidisconnectRoute9D90B85D": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebSocketApi32E01B6B",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "$disconnect",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "WebSocketApidisconnectRouteDisconnectIntegration125B6C49",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "WebSocketApidisconnectRouteDisconnectIntegration125B6C49": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebSocketApi32E01B6B",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "WebSocketApiDisconnectLambdaC2566805",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "WebSocketApidisconnectRouteDisconnectIntegrationPermission3D5EA087": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "WebSocketApiDisconnectLambdaC2566805",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "WebSocketApi32E01B6B",
+              },
+              "/*/*$disconnect",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
