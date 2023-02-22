@@ -1,31 +1,4 @@
-// Vitest Snapshot v1
-
-exports[`payload 1`] = `
-{
-  "attachments": [
-    {
-      "footer": "<https://github.com/ghuser/my-repo|ghuser/my-repo>",
-      "mrkdwn_in": [
-        "text",
-      ],
-      "text": "<https://github.com/ghuser/my-repo/commit/5b48e53fe13c778e6fe081097dff053215a42045|\`5b48e53f\`> - fix: potential fix for bsd-specific behavior for cp utility",
-    },
-  ],
-  "blocks": [
-    {
-      "text": {
-        "text": "<https://github.com/ghuser/my-repo/compare/83054c3ad04a...5b48e53fe13c|1 new commit> pushed to <https://github.com/ghuser/my-repo/tree/dev|\`dev\`> by <https://github.com/ghuser|\`ghuser\`>",
-        "type": "mrkdwn",
-      },
-      "type": "section",
-    },
-  ],
-  "channel": "#my-channel",
-  "icon_emoji": ":twisted_rightwards_arrows:",
-  "text": "Commit(s) pushed to repository ghuser/my-repo",
-  "username": "GitHub Integration",
-}
-`;
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`slack payload snapshot 1`] = `
 {
