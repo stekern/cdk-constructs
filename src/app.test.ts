@@ -9,6 +9,10 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
 import * as apigw from "aws-cdk-lib/aws-apigateway"
 import * as customconstructs from "."
 
+const sanitizedTemplate = (stack: cdk.Stack) => {
+  return JSON.parse(JSON.stringify(assertions.Template.fromStack(stack).toJSON()).replace(/[a-f0-9]{64}(.zip)/g, "<sha256-placeholder>$1"))
+}
+
 describe("SfnProwlerTask", () => {
   test("should match snapshot", () => {
     const app = new cdk.App()
@@ -17,7 +21,7 @@ describe("SfnProwlerTask", () => {
     new customconstructs.SfnProwlerTask(stack, "ProwlerTask", {
       cluster,
     })
-    expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
 })
 describe("GitHubPushWebhookApi", () => {
@@ -47,7 +51,7 @@ describe("GitHubPushWebhookApi", () => {
       certificate,
       gitHubWebhookSecret,
     })
-    expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
 })
 describe("GitHubCookieAuth", () => {
@@ -105,7 +109,7 @@ describe("GitHubCookieAuth", () => {
         authorizer: gitHubCookieAuth.authorizer,
       },
     }).root.addMethod("GET")
-    expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
 })
 describe("WebSocketApi", () => {
@@ -130,7 +134,7 @@ describe("WebSocketApi", () => {
       hostedZone,
       certificate,
     })
-    expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
 })
 describe("GitHubWorkflowRunWebhookApi", () => {
@@ -173,6 +177,6 @@ describe("GitHubWorkflowRunWebhookApi", () => {
       hostedZone,
       certificate,
     })
-    expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
 })
