@@ -10,7 +10,12 @@ import * as apigw from "aws-cdk-lib/aws-apigateway"
 import * as customconstructs from "."
 
 const sanitizedTemplate = (stack: cdk.Stack) => {
-  return JSON.parse(JSON.stringify(assertions.Template.fromStack(stack).toJSON()).replace(/[a-f0-9]{64}(.zip)/g, "<sha256-placeholder>$1"))
+  return JSON.parse(
+    JSON.stringify(assertions.Template.fromStack(stack).toJSON()).replace(
+      /[a-f0-9]{64}(.zip)/g,
+      "<sha256-placeholder>$1",
+    ),
+  )
 }
 
 describe("SfnProwlerTask", () => {
@@ -175,6 +180,38 @@ describe("GitHubWorkflowRunWebhookApi", () => {
       domainName: `hooks.${domainName}`,
       table,
       hostedZone,
+      certificate,
+    })
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
+})
+describe("BasicAuthBucket", () => {
+  test("should match snapshot", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack", {
+      env: {
+        region: "us-east-1",
+      },
+    })
+    const domainName = "example.com"
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      stack,
+      "HostedZone",
+      {
+        zoneName: domainName,
+        hostedZoneId: "/hostedzone/ABCDEF12345678",
+      },
+    )
+    const certificate = new cm.Certificate(stack, "Certificate", {
+      domainName: `*.${domainName}`,
+      validation: cm.CertificateValidation.fromDns(hostedZone),
+    })
+    const secret = sm.Secret.fromSecretNameV2(stack, "Secret", "my-secret")
+
+    new customconstructs.BasicAuthBucket(stack, "BasicAuthBucket", {
+      domainName: `protected.${domainName}`,
+      hostedZone,
+      secret,
       certificate,
     })
     expect(sanitizedTemplate(stack)).toMatchSnapshot()
