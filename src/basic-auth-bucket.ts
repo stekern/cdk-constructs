@@ -11,6 +11,7 @@ import * as logs from "aws-cdk-lib/aws-logs"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
+import * as crypto from "crypto"
 import * as path from "path"
 
 interface Props extends cdk.StackProps {
@@ -119,6 +120,14 @@ export class BasicAuthBucket extends constructs.Construct {
           ),
         ],
       }),
+    )
+    // NOTE: We override the logical ID to include a sha256 hash of
+    // the original logical ID to make the value easier to replace in
+    // snapshot tests.
+    const fnVersion = fn.currentVersion.node.defaultChild as lambda.CfnVersion
+    fnVersion.overrideLogicalId(
+      fn.currentVersion.node.id +
+        crypto.createHash("sha256").update(fnVersion.logicalId).digest("hex"),
     )
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       certificate: props.certificate,

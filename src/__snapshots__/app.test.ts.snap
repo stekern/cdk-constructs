@@ -67,7 +67,7 @@ exports[`BasicAuthBucket should match snapshot 1`] = `
                 "EventType": "viewer-request",
                 "IncludeBody": false,
                 "LambdaFunctionARN": {
-                  "Ref": "BasicAuthBucketFnCurrentVersionFD441D34e22eb581d096ef6fa479775868897c55",
+                  "Ref": "CurrentVersion<sha256-placeholder>",
                 },
               },
             ],
@@ -136,14 +136,6 @@ exports[`BasicAuthBucket should match snapshot 1`] = `
         "Timeout": 5,
       },
       "Type": "AWS::Lambda::Function",
-    },
-    "BasicAuthBucketFnCurrentVersionFD441D34e22eb581d096ef6fa479775868897c55": {
-      "Properties": {
-        "FunctionName": {
-          "Ref": "BasicAuthBucketFn36598CC5",
-        },
-      },
-      "Type": "AWS::Lambda::Version",
     },
     "BasicAuthBucketFnLogRetention46F4A5F4": {
       "Properties": {
@@ -335,6 +327,14 @@ exports[`BasicAuthBucket should match snapshot 1`] = `
         "ValidationMethod": "DNS",
       },
       "Type": "AWS::CertificateManager::Certificate",
+    },
+    "CurrentVersion<sha256-placeholder>": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "BasicAuthBucketFn36598CC5",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
       "DependsOn": [
