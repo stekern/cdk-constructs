@@ -67,7 +67,7 @@ exports[`BasicAuthBucket should match snapshot 1`] = `
                 "EventType": "viewer-request",
                 "IncludeBody": false,
                 "LambdaFunctionARN": {
-                  "Ref": "CurrentVersion<sha256-placeholder>",
+                  "Ref": "LambdaCurrentVersion<sha256-placeholder>",
                 },
               },
             ],
@@ -328,7 +328,7 @@ exports[`BasicAuthBucket should match snapshot 1`] = `
       },
       "Type": "AWS::CertificateManager::Certificate",
     },
-    "CurrentVersion<sha256-placeholder>": {
+    "LambdaCurrentVersion<sha256-placeholder>": {
       "Properties": {
         "FunctionName": {
           "Ref": "BasicAuthBucketFn36598CC5",

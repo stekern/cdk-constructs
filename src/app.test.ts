@@ -15,8 +15,8 @@ const sanitizedTemplate = (stack: cdk.Stack) => {
       .replace(/[a-f0-9]{64}(.zip)/g, "<sha256-placeholder>$1")
       // Replace logical IDs of Lambda versions as they often change
       .replace(
-        /CurrentVersion[a-f0-9]{64}/g,
-        "CurrentVersion<sha256-placeholder>",
+        /LambdaCurrentVersion[a-f0-9]{64}/g,
+        "LambdaCurrentVersion<sha256-placeholder>",
       ),
   )
 }

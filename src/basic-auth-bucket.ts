@@ -125,8 +125,11 @@ export class BasicAuthBucket extends constructs.Construct {
     // snapshot tests.
     const fnVersion = fn.currentVersion.node.defaultChild as lambda.CfnVersion
     fnVersion.overrideLogicalId(
-      fn.currentVersion.node.id +
-        crypto.createHash("sha256").update(fnVersion.logicalId).digest("hex"),
+      "LambdaCurrentVersion" +
+        crypto
+          .createHash("sha256")
+          .update(cdk.Stack.of(this).getLogicalId(fnVersion))
+          .digest("hex"),
     )
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       certificate: props.certificate,
