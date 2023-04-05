@@ -203,9 +203,6 @@ export class GitHubCookieAuth extends constructs.Construct {
 
     this.authorizerFn = new NodejsFunction(this, "AuthorizerLambda", {
       entry: path.join(__dirname, "../assets/github-cookie-auth/authorizer.ts"),
-      bundling: {
-        nodeModules: [],
-      },
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_16_X,
       timeout: cdk.Duration.seconds(10),
@@ -243,9 +240,6 @@ export class GitHubCookieAuth extends constructs.Construct {
         __dirname,
         "../assets/github-cookie-auth/oauth-flow-request.ts",
       ),
-      bundling: {
-        nodeModules: [],
-      },
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_16_X,
       timeout: cdk.Duration.seconds(10),
@@ -277,9 +271,6 @@ export class GitHubCookieAuth extends constructs.Construct {
         __dirname,
         "../assets/github-cookie-auth/oauth-flow-callback.ts",
       ),
-      bundling: {
-        nodeModules: [],
-      },
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_16_X,
       timeout: cdk.Duration.seconds(10),

@@ -67,7 +67,6 @@ export class BasicAuthBucket extends constructs.Construct {
     const fn = new njs.NodejsFunction(this, "Fn", {
       entry: path.join(__dirname, "../assets/basic-auth-bucket/index.ts"),
       bundling: {
-        nodeModules: [],
         // We use esbuild to replace static values during transpilation.
         // NOTE: This will not work for CDK Tokens (i.e., values that are not known at synth-time)
         define: Object.fromEntries(

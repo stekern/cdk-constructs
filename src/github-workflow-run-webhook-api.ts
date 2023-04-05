@@ -65,9 +65,6 @@ export class GitHubWorkflowRunWebhookApi extends constructs.Construct {
           __dirname,
           "../assets/github-workflow-run-webhook-receiver/index.ts",
         ),
-        bundling: {
-          nodeModules: [],
-        },
         handler: "handler",
         runtime: lambda.Runtime.NODEJS_16_X,
         timeout: cdk.Duration.seconds(10),

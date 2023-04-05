@@ -75,9 +75,6 @@ export class GitHubPushWebhookApi extends constructs.Construct {
           __dirname,
           "../assets/github-push-webhook/webhook-receiver.ts",
         ),
-        bundling: {
-          nodeModules: [],
-        },
         handler: "handler",
         runtime: lambda.Runtime.NODEJS_16_X,
         timeout: cdk.Duration.seconds(10),
@@ -137,9 +134,6 @@ export class GitHubPushWebhookApi extends constructs.Construct {
         __dirname,
         "../assets/github-push-webhook/slack-forwarder.ts",
       ),
-      bundling: {
-        nodeModules: [],
-      },
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_16_X,
       timeout: cdk.Duration.seconds(10),
