@@ -35,7 +35,7 @@
     "@aws-sdk/client-secrets-manager": "3.352.0",
     "@commitlint/cli": "17.6.5",
     "@commitlint/config-conventional": "17.6.5",
-    "@octokit/types": "7.5.1",
+    "@octokit/types": "10.0.0",
     "@octokit/webhooks-types": "6.11.0",
     "@tsconfig/node16": "1.0.4",
     "@types/aws-lambda": "8.10.117",
