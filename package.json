@@ -32,7 +32,7 @@
     "@aws-cdk/aws-apigatewayv2-alpha": "2.50.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-authorizers-alpha": "2.50.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.50.0-alpha.0",
-    "@aws-sdk/client-secrets-manager": "3.354.0",
+    "@aws-sdk/client-secrets-manager": "3.357.0",
     "@commitlint/cli": "17.6.5",
     "@commitlint/config-conventional": "17.6.5",
     "@octokit/types": "7.5.1",
