@@ -33,7 +33,7 @@
     "@aws-cdk/aws-apigatewayv2-authorizers-alpha": "2.50.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.50.0-alpha.0",
     "@aws-sdk/client-secrets-manager": "3.572.0",
-    "@commitlint/cli": "19.2.2",
+    "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "19.2.2",
     "@octokit/types": "7.5.1",
     "@octokit/webhooks-types": "6.11.0",
