@@ -92,9 +92,6 @@ export class BasicAuthBucket extends constructs.Construct {
         resources: ["arn:aws:logs:*:*:log-group:/aws/lambda/us-east-1.*"],
       }),
     )
-    fn.role?.grantAssumeRole(
-      new iam.ServicePrincipal("edgelambda.amazonaws.com"),
-    )
 
     const protectedBucket = new s3.Bucket(this, "ProtectedBucket", {
       publicReadAccess: false,
