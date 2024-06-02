@@ -5,9 +5,8 @@ import * as route53targets from "aws-cdk-lib/aws-route53-targets"
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2"
-import * as apigwv2alpha from "@aws-cdk/aws-apigatewayv2-alpha"
-import * as apigwv2Integrations from "@aws-cdk/aws-apigatewayv2-integrations-alpha"
-import * as apigwv2Authorizers from "@aws-cdk/aws-apigatewayv2-authorizers-alpha"
+import * as apigwv2Integrations from "aws-cdk-lib/aws-apigatewayv2-integrations"
+import * as apigwv2Authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as logs from "aws-cdk-lib/aws-logs"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
@@ -86,7 +85,7 @@ export class WebSocketApi extends constructs.Construct {
     this.connectionTable.grantReadWriteData(connectFn)
     this.connectionTable.grantReadWriteData(disconnectFn)
 
-    this.api = new apigwv2alpha.WebSocketApi(this, "WebSocketApi", {
+    this.api = new apigwv2.WebSocketApi(this, "WebSocketApi", {
       connectRouteOptions: {
         authorizer: props.authorizer,
         integration: new apigwv2Integrations.WebSocketLambdaIntegration(
@@ -105,16 +104,16 @@ export class WebSocketApi extends constructs.Construct {
       "DisableExecuteApiEndpoint",
       true,
     )
-    const stage = new apigwv2alpha.WebSocketStage(this, "Stage", {
+    const stage = new apigwv2.WebSocketStage(this, "Stage", {
       webSocketApi: this.api,
       stageName: "prod",
       autoDeploy: true,
     })
-    this.domainName = new apigwv2alpha.DomainName(this, "DomainName", {
+    this.domainName = new apigwv2.DomainName(this, "DomainName", {
       certificate: props.certificate,
       domainName: props.domainName,
     })
-    const apiMapping = new apigwv2alpha.ApiMapping(this, "ApiMapping", {
+    const apiMapping = new apigwv2.ApiMapping(this, "ApiMapping", {
       api: this.api,
       domainName: this.domainName,
       stage: stage,

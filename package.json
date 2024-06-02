@@ -29,9 +29,6 @@
     ]
   },
   "devDependencies": {
-    "@aws-cdk/aws-apigatewayv2-alpha": "2.50.0-alpha.0",
-    "@aws-cdk/aws-apigatewayv2-authorizers-alpha": "2.50.0-alpha.0",
-    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.50.0-alpha.0",
     "@aws-sdk/client-secrets-manager": "3.572.0",
     "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "19.2.2",
@@ -43,8 +40,8 @@
     "@types/node": "16.18.97",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
-    "aws-cdk": "2.115.0",
-    "aws-cdk-lib": "2.115.0",
+    "aws-cdk": "2.144.0",
+    "aws-cdk-lib": "2.144.0",
     "aws-sdk": "2.1617.0",
     "constructs": "10.3.0",
     "esbuild": "0.21.1",
@@ -59,9 +56,6 @@
     "typescript": "5.4.5"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-apigatewayv2-alpha": "*",
-    "@aws-cdk/aws-apigatewayv2-authorizers-alpha": "*",
-    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "*",
     "aws-cdk-lib": "^2.0.0",
     "constructs": "^10.0.0"
   }

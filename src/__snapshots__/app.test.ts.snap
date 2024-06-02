@@ -4068,7 +4068,7 @@ exports[`SfnProwlerTask should match snapshot 1`] = `
               {
                 "Ref": "AWS::Region",
               },
-              ""}}",
+              ""},"logApiResponseData":true}",
             ],
           ],
         },
@@ -4080,7 +4080,7 @@ exports[`SfnProwlerTask should match snapshot 1`] = `
               {
                 "Ref": "AWS::Region",
               },
-              "::product-subscription/prowler/prowler"}}",
+              "::product-subscription/prowler/prowler"},"logApiResponseData":true}",
             ],
           ],
         },
@@ -4103,7 +4103,7 @@ exports[`SfnProwlerTask should match snapshot 1`] = `
               {
                 "Ref": "AWS::Region",
               },
-              ""}}",
+              ""},"logApiResponseData":true}",
             ],
           ],
         },
@@ -4891,7 +4891,7 @@ exports[`WebSocketApi should match snapshot 1`] = `
               {
                 "Ref": "WebSocketApi32E01B6B",
               },
-              "/*/*$connect",
+              "/*$connect",
             ],
           ],
         },
@@ -4981,7 +4981,7 @@ exports[`WebSocketApi should match snapshot 1`] = `
               {
                 "Ref": "WebSocketApi32E01B6B",
               },
-              "/*/*$disconnect",
+              "/*$disconnect",
             ],
           ],
         },
