@@ -33,7 +33,7 @@ export class SfnProwlerTask extends constructs.Construct {
       policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
         resources: [`arn:aws:securityhub:${region}:${account}:hub/default`],
       }),
-      onUpdate: {
+      onCreate: {
         service: "SecurityHub",
         action: "enableImportFindingsForProduct",
         parameters: {

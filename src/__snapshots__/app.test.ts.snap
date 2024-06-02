@@ -4091,22 +4091,6 @@ exports[`SfnProwlerTask should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Update": {
-          "Fn::Join": [
-            "",
-            [
-              "{"service":"SecurityHub","action":"enableImportFindingsForProduct","parameters":{"ProductArn":"arn:aws:securityhub:",
-              {
-                "Ref": "AWS::Region",
-              },
-              "::product/prowler/prowler"},"physicalResourceId":{"id":"",
-              {
-                "Ref": "AWS::Region",
-              },
-              ""},"logApiResponseData":true}",
-            ],
-          ],
-        },
       },
       "Type": "Custom::AWS",
       "UpdateReplacePolicy": "Delete",
