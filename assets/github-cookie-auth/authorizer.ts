@@ -137,7 +137,7 @@ export const handler = async (
     CiphertextBlob: decoded,
   })
 
-  const accessToken = decrypted.Plaintext?.toString()
+  const accessToken = Buffer.from(decrypted.Plaintext!).toString("utf8")
   if (!accessToken) {
     console.error("Received empty value when decrypting")
     throw new Error("Unauthenticated")
