@@ -1,17 +1,14 @@
 import * as lambdaTypes from "aws-lambda"
 import * as octokitWebhooksTypes from "@octokit/webhooks-types"
 import { createHmac } from "crypto"
-import SecretsManager from "aws-sdk/clients/secretsmanager"
-import DynamoDB from "aws-sdk/clients/dynamodb"
-import { AWSError } from "aws-sdk"
+import { ServiceException } from "@smithy/smithy-client"
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import { DynamoDB } from "@aws-sdk/client-dynamodb"
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { timingSafeEqual } from "crypto"
 
-const secretsManager = new SecretsManager({
-  apiVersion: "2017-10-17",
-})
-const dynamodb = new DynamoDB.DocumentClient({
-  apiVersion: "2012-08-10",
-})
+const secretsManager = new SecretsManager()
+const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
 export const timingSafeStringComparison = (a: string, b: string) => {
   try {
@@ -23,7 +20,7 @@ export const timingSafeStringComparison = (a: string, b: string) => {
   }
 }
 
-export const isAWSError = (arg: unknown): arg is AWSError => {
+export const isAWSError = (arg: unknown): arg is ServiceException => {
   return (
     arg !== null &&
     typeof arg === "object" &&
@@ -59,11 +56,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager
-    .getSecretValue({
-      SecretId: secretName,
-    })
-    .promise()
+  const secret = await secretsManager.getSecretValue({
+    SecretId: secretName,
+  })
 
   const secretToken = secret.SecretString || null
   if (!secretToken) {
@@ -105,44 +100,44 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
 
   if (webhook.repository.default_branch === webhook.workflow_run.head_branch) {
     try {
-      await dynamodb
-        .put({
-          TableName: tableName,
-          Item: {
-            PK: `${webhook.installation!.id}`,
-            SK: webhook.workflow.node_id,
-            repository: JSON.parse(
-              JSON.stringify(webhook.repository),
-            ) as Record<string, unknown>,
-            installationId: `${webhook.installation!.id}`,
-            workflow: JSON.parse(JSON.stringify(webhook.workflow)) as Record<
-              string,
-              unknown
-            >,
-            action: webhook.action,
-            workflowRun: JSON.parse(
-              JSON.stringify(webhook.workflow_run),
-            ) as Record<string, unknown>,
-          },
-          ExpressionAttributeNames: {
-            "#pk": "PK",
-            "#sk": "SK",
-            "#workflowRun": "workflowRun",
-            "#started": "run_started_at",
-            "#updated": "updated_at",
-            "#action": "action",
-          },
-          ExpressionAttributeValues: {
-            ":pk": `${webhook.installation!.id}`,
-            ":sk": webhook.workflow.node_id,
-            ":action": webhook.action,
-            ":actionRequested": "requested",
-            ":actionInProgress": "in_progress",
-            ":actionCompleted": "completed",
-            ":started": webhook.workflow_run.run_started_at,
-            ":updated": webhook.workflow_run.updated_at,
-          },
-          ConditionExpression: `
+      await dynamodb.put({
+        TableName: tableName,
+        Item: {
+          PK: `${webhook.installation!.id}`,
+          SK: webhook.workflow.node_id,
+          repository: JSON.parse(JSON.stringify(webhook.repository)) as Record<
+            string,
+            unknown
+          >,
+          installationId: `${webhook.installation!.id}`,
+          workflow: JSON.parse(JSON.stringify(webhook.workflow)) as Record<
+            string,
+            unknown
+          >,
+          action: webhook.action,
+          workflowRun: JSON.parse(
+            JSON.stringify(webhook.workflow_run),
+          ) as Record<string, unknown>,
+        },
+        ExpressionAttributeNames: {
+          "#pk": "PK",
+          "#sk": "SK",
+          "#workflowRun": "workflowRun",
+          "#started": "run_started_at",
+          "#updated": "updated_at",
+          "#action": "action",
+        },
+        ExpressionAttributeValues: {
+          ":pk": `${webhook.installation!.id}`,
+          ":sk": webhook.workflow.node_id,
+          ":action": webhook.action,
+          ":actionRequested": "requested",
+          ":actionInProgress": "in_progress",
+          ":actionCompleted": "completed",
+          ":started": webhook.workflow_run.run_started_at,
+          ":updated": webhook.workflow_run.updated_at,
+        },
+        ConditionExpression: `
           (attribute_not_exists(#pk) AND attribute_not_exists(#sk)) OR (
             #pk = :pk AND #sk = :sk AND (
               attribute_not_exists(#workflowRun) OR (
@@ -164,11 +159,10 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
               )
             )
           )`,
-        })
-        .promise()
+      })
     } catch (e) {
       if (isAWSError(e)) {
-        if (e.code !== "ConditionalCheckFailedException") {
+        if (e.name !== "ConditionalCheckFailedException") {
           throw e
         }
       } else {

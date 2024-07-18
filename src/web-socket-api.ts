@@ -62,7 +62,7 @@ export class WebSocketApi extends constructs.Construct {
     const connectFn = new NodejsFunction(this, "ConnectLambda", {
       entry: path.join(__dirname, "../assets/web-socket-api/connect.ts"),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       timeout: cdk.Duration.seconds(10),
       logRetention: logs.RetentionDays.ONE_MONTH,
       environment: {
@@ -75,7 +75,7 @@ export class WebSocketApi extends constructs.Construct {
     const disconnectFn = new NodejsFunction(this, "DisconnectLambda", {
       entry: path.join(__dirname, "../assets/web-socket-api/disconnect.ts"),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       timeout: cdk.Duration.seconds(10),
       logRetention: logs.RetentionDays.ONE_MONTH,
       environment: {

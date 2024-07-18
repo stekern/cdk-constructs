@@ -1,20 +1,15 @@
 import * as lambdaTypes from "aws-lambda"
 import * as octokitTypes from "@octokit/types"
-import KMS from "aws-sdk/clients/kms"
-import SecretsManager from "aws-sdk/clients/secretsmanager"
-import DynamoDB from "aws-sdk/clients/dynamodb"
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import { DynamoDB } from "@aws-sdk/client-dynamodb"
+import { KMS } from "@aws-sdk/client-kms"
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { getCookieValue, httpRequest } from "./lib"
 
-const secretsManager = new SecretsManager({
-  apiVersion: "2017-10-17",
-})
-const kms = new KMS({
-  apiVersion: "2014-11-01",
-})
+const secretsManager = new SecretsManager()
+const kms = new KMS()
 
-const dynamodb = new DynamoDB.DocumentClient({
-  apiVersion: "2012-08-10",
-})
+const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
 const getGitHubAppInstallationsForUser = async (
   token: string,
@@ -122,15 +117,13 @@ export const handler = async (
   // Some simple caching because WebSocket APIs do not
   // currently support cached responses from Lambda
   if (useCache) {
-    const cachedResponse = await dynamodb
-      .get({
-        Key: {
-          PK: value,
-          SK: event.methodArn,
-        },
-        TableName: authorizerCacheTableName,
-      })
-      .promise()
+    const cachedResponse = await dynamodb.get({
+      Key: {
+        PK: value,
+        SK: event.methodArn,
+      },
+      TableName: authorizerCacheTableName,
+    })
     if (cachedResponse.Item && cachedResponse.Item.cachedResponse) {
       // TODO: Manually check ttl attribute in case there are delays in DynamoDB
       console.log("Using cached authorizer response")
@@ -139,12 +132,10 @@ export const handler = async (
     }
   }
 
-  const decrypted = await kms
-    .decrypt({
-      KeyId: authCookieEncryptionKeyArn,
-      CiphertextBlob: decoded,
-    })
-    .promise()
+  const decrypted = await kms.decrypt({
+    KeyId: authCookieEncryptionKeyArn,
+    CiphertextBlob: decoded,
+  })
 
   const accessToken = decrypted.Plaintext?.toString()
   if (!accessToken) {
@@ -152,11 +143,9 @@ export const handler = async (
     throw new Error("Unauthenticated")
   }
 
-  const secret = await secretsManager
-    .getSecretValue({
-      SecretId: secretName,
-    })
-    .promise()
+  const secret = await secretsManager.getSecretValue({
+    SecretId: secretName,
+  })
 
   const secrets = secret.SecretString
     ? (JSON.parse(secret.SecretString) as {
@@ -261,19 +250,15 @@ export const handler = async (
     }
 
     if (useCache) {
-      await dynamodb
-        .put({
-          Item: {
-            PK: value,
-            SK: event.methodArn,
-            ttl: Math.floor(
-              Date.now() / 1000 + parseInt(authorizerCacheTtl, 10),
-            ),
-            cachedResponse: authReponse,
-          },
-          TableName: authorizerCacheTableName,
-        })
-        .promise()
+      await dynamodb.put({
+        Item: {
+          PK: value,
+          SK: event.methodArn,
+          ttl: Math.floor(Date.now() / 1000 + parseInt(authorizerCacheTtl, 10)),
+          cachedResponse: authReponse,
+        },
+        TableName: authorizerCacheTableName,
+      })
     }
     return authReponse
   }

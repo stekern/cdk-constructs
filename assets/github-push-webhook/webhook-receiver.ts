@@ -1,16 +1,13 @@
 import { DbPushEvent } from "./types"
 import * as lambdaTypes from "aws-lambda"
 import { createHmac, timingSafeEqual } from "crypto"
-import SecretsManager from "aws-sdk/clients/secretsmanager"
-import DynamoDB from "aws-sdk/clients/dynamodb"
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import { DynamoDB } from "@aws-sdk/client-dynamodb"
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 
-const secretsManager = new SecretsManager({
-  apiVersion: "2017-10-17",
-})
+const secretsManager = new SecretsManager()
 
-const dynamodb = new DynamoDB.DocumentClient({
-  apiVersion: "2012-08-10",
-})
+const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
 const timingSafeStringComparison = (a: string, b: string) => {
   try {
@@ -50,11 +47,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager
-    .getSecretValue({
-      SecretId: secretName,
-    })
-    .promise()
+  const secret = await secretsManager.getSecretValue({
+    SecretId: secretName,
+  })
 
   const secretToken = secret.SecretString || null
   if (!secretToken) {
@@ -116,12 +111,10 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     branch: branch,
     isDefaultBranch,
   }
-  await dynamodb
-    .put({
-      TableName: tableName,
-      Item: ddbItem,
-    })
-    .promise()
+  await dynamodb.put({
+    TableName: tableName,
+    Item: ddbItem,
+  })
 
   return {
     statusCode: 200,

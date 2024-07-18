@@ -1,7 +1,8 @@
 import { APIGatewayProxyEvent } from "aws-lambda"
-import DynamoDB from "aws-sdk/clients/dynamodb"
+import { DynamoDBDocument, PutCommandInput } from "@aws-sdk/lib-dynamodb"
+import { DynamoDB } from "@aws-sdk/client-dynamodb"
 
-const dynamodb = new DynamoDB.DocumentClient({ apiVersion: "2012-08-10" })
+const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   const tableName = process.env.TABLE_NAME
@@ -13,7 +14,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       statusCode: 500,
     }
   }
-  const params: DynamoDB.DocumentClient.PutItemInput = {
+  const params: PutCommandInput = {
     TableName: tableName,
     Item: {
       ...(storeAuthorizerProperties && event.requestContext.authorizer),
@@ -22,7 +23,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
   }
 
   try {
-    await dynamodb.put(params).promise()
+    await dynamodb.put(params)
   } catch (err) {
     console.error("Failed to store item in DynamoDB")
     return {

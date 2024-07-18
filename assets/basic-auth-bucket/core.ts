@@ -5,7 +5,10 @@ import {
   verifyBasicAuthCredentials,
 } from "./lib"
 export class AuthorizeRequest {
-  constructor(private secretStore: ISecretStore, private cache?: ICache) {}
+  constructor(
+    private secretStore: ISecretStore,
+    private cache?: ICache,
+  ) {}
   async handle(requestEvent: IRequestEvent): Promise<boolean> {
     const base64EncodedCredentials = getBase64EncodedCredentialsFromHeader(
       requestEvent.authorizationHeader,

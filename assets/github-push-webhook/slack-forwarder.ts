@@ -2,6 +2,8 @@ import { DbPushEvent, ForwardingRule } from "./types"
 import { URL } from "url"
 import * as https from "https"
 import { DynamoDBStreamEvent } from "aws-lambda"
+import { unmarshall } from "@aws-sdk/util-dynamodb"
+import type { AttributeValue } from "@aws-sdk/client-dynamodb"
 import DynamoDB from "aws-sdk/clients/dynamodb"
 
 type SlackPayload = {
@@ -129,7 +131,10 @@ export const handler = async (event: DynamoDBStreamEvent) => {
     console.log("No Slack forwarding rules set up")
   }
   const pushEvents = event.Records.filter((r) => r.dynamodb?.NewImage).map(
-    (r) => DynamoDB.Converter.unmarshall(r.dynamodb!.NewImage!) as DbPushEvent,
+    (r) =>
+      unmarshall(
+        r.dynamodb!.NewImage! as Record<string, AttributeValue>,
+      ) as DbPushEvent,
   )
   const payloads = forwardingRules.flatMap((forwardingRule) => {
     const matchingPushEvents = pushEvents.filter(

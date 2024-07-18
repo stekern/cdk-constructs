@@ -1,15 +1,11 @@
 import * as lambdaTypes from "aws-lambda"
-import KMS from "aws-sdk/clients/kms"
-import SecretsManager from "aws-sdk/clients/secretsmanager"
+import { KMS } from "@aws-sdk/client-kms"
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { createHash } from "crypto"
 import { httpRequest, getCookieValue } from "./lib"
 
-const secretsManager = new SecretsManager({
-  apiVersion: "2017-10-17",
-})
-const kms = new KMS({
-  apiVersion: "2014-11-01",
-})
+const secretsManager = new SecretsManager()
+const kms = new KMS()
 
 export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   const [
@@ -84,11 +80,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   }
 
   // Perform code exchange
-  const secret = await secretsManager
-    .getSecretValue({
-      SecretId: secretName,
-    })
-    .promise()
+  const secret = await secretsManager.getSecretValue({
+    SecretId: secretName,
+  })
 
   const secrets = secret.SecretString
     ? (JSON.parse(secret.SecretString) as {
@@ -149,12 +143,10 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const encrypted = await kms
-    .encrypt({
-      KeyId: authCookieEncryptionKeyArn,
-      Plaintext: res.access_token,
-    })
-    .promise()
+  const encrypted = await kms.encrypt({
+    KeyId: authCookieEncryptionKeyArn,
+    Plaintext: Buffer.from(res.access_token),
+  })
 
   if (!encrypted.CiphertextBlob) {
     console.error("Failed to encrypt access token")
@@ -166,7 +158,7 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const encoded = encrypted.CiphertextBlob.toString("base64")
+  const encoded = Buffer.from(encrypted.CiphertextBlob).toString("base64")
   const cookieString = authCookieAttributes
     ? `${authCookieName}=${encoded}; ${authCookieAttributes}`
     : `${authCookieName}=${encoded}`

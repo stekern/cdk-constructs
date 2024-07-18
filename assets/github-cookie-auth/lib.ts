@@ -1,6 +1,6 @@
 import { createSign, randomFillSync, timingSafeEqual } from "crypto"
 import * as https from "https"
-import { AWSError } from "aws-sdk"
+import { ServiceException } from "@smithy/smithy-client"
 
 export const getUrlWithEncodedQueryParams = (
   url: string,
@@ -100,7 +100,7 @@ export const sign = (
 /**
  * Check if an error is an AWS error or not
  */
-export const isAWSError = (arg: unknown): arg is AWSError => {
+export const isAWSError = (arg: unknown): arg is ServiceException => {
   return (
     arg !== null &&
     typeof arg === "object" &&

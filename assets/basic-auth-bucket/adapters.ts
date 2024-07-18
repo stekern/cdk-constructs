@@ -5,7 +5,6 @@ export class SecretStore implements ISecretStore {
   private client: SecretsManager
   constructor() {
     this.client = new SecretsManager({
-      apiVersion: "2017-10-17",
       // To avoid the need for cross region replication of secrets
       region: "us-east-1",
     })

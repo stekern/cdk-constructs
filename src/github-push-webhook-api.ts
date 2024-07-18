@@ -76,7 +76,7 @@ export class GitHubPushWebhookApi extends constructs.Construct {
           "../assets/github-push-webhook/webhook-receiver.ts",
         ),
         handler: "handler",
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_20_X,
         timeout: cdk.Duration.seconds(10),
         logRetention: logs.RetentionDays.ONE_MONTH,
         environment: {
@@ -135,7 +135,7 @@ export class GitHubPushWebhookApi extends constructs.Construct {
         "../assets/github-push-webhook/slack-forwarder.ts",
       ),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       timeout: cdk.Duration.seconds(10),
       logRetention: logs.RetentionDays.ONE_MONTH,
       environment: {

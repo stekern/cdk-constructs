@@ -1,11 +1,9 @@
 import * as lambdaTypes from "aws-lambda"
 import { createHash } from "crypto"
-import SecretsManager from "aws-sdk/clients/secretsmanager"
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { generateRandomString, getUrlWithEncodedQueryParams } from "./lib"
 
-const secretsManager = new SecretsManager({
-  apiVersion: "2017-10-17",
-})
+const secretsManager = new SecretsManager()
 
 export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   const [
@@ -33,11 +31,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager
-    .getSecretValue({
-      SecretId: secretName,
-    })
-    .promise()
+  const secret = await secretsManager.getSecretValue({
+    SecretId: secretName,
+  })
 
   const secrets = secret.SecretString
     ? (JSON.parse(secret.SecretString) as {
