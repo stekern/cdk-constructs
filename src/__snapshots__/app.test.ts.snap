@@ -729,7 +729,6 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
               ],
             },
             "AUTH_COOKIE_NAME": "token",
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "GITHUB_APP_ID": "123456",
             "SECRET_NAME": {
               "Fn::Join": [
@@ -793,7 +792,7 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 10,
         "TracingConfig": {
           "Mode": "Active",
@@ -1021,7 +1020,6 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
               ],
             },
             "AUTH_COOKIE_NAME": "token",
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "NONCE_COOKIE_NAME": "nonce",
             "REDIRECT_URL": "https://app.example.com",
             "RESPONSE_HEADERS": "{"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD","Access-Control-Allow-Origin":"https://app.example.com"}",
@@ -1087,7 +1085,7 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 10,
         "TracingConfig": {
           "Mode": "Active",
@@ -1757,7 +1755,6 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
         },
         "Environment": {
           "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "CALLBACK_URL": "https://auth.example.com/callback",
             "NONCE_COOKIE_ATTRIBUTES": "Secure; HttpOnly; SameSite=Lax",
             "NONCE_COOKIE_NAME": "nonce",
@@ -1824,7 +1821,7 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 10,
         "TracingConfig": {
           "Mode": "Active",
@@ -2426,7 +2423,6 @@ exports[`GitHubPushWebhookApi should match snapshot 1`] = `
         },
         "Environment": {
           "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "SECRET_NAME": {
               "Fn::Join": [
                 "-",
@@ -2492,7 +2488,7 @@ exports[`GitHubPushWebhookApi should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 10,
       },
       "Type": "AWS::Lambda::Function",
@@ -3163,7 +3159,6 @@ exports[`GitHubWorkflowRunWebhookApi should match snapshot 1`] = `
         },
         "Environment": {
           "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "GITHUB_APP_ID": "123456",
             "SECRET_NAME": {
               "Fn::Join": [
@@ -3230,7 +3225,7 @@ exports[`GitHubWorkflowRunWebhookApi should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 10,
       },
       "Type": "AWS::Lambda::Function",
@@ -4479,7 +4474,6 @@ exports[`WebSocketApi should match snapshot 1`] = `
         },
         "Environment": {
           "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "STORE_AUTHORIZER_PROPERTIES": "false",
             "TABLE_NAME": {
               "Ref": "WebSocketApiConnectionTable25CA1A9B",
@@ -4493,7 +4487,7 @@ exports[`WebSocketApi should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 10,
       },
       "Type": "AWS::Lambda::Function",
@@ -4630,7 +4624,6 @@ exports[`WebSocketApi should match snapshot 1`] = `
         },
         "Environment": {
           "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "TABLE_NAME": {
               "Ref": "WebSocketApiConnectionTable25CA1A9B",
             },
@@ -4643,7 +4636,7 @@ exports[`WebSocketApi should match snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 10,
       },
       "Type": "AWS::Lambda::Function",
