@@ -18,7 +18,7 @@ const sanitizedTemplate = (stack: cdk.Stack) => {
         /LambdaCurrentVersion[a-f0-9]{64}/g,
         "LambdaCurrentVersion<sha256-placeholder>",
       ),
-  )
+  ) as Record<string, unknown>
 }
 
 describe("SfnProwlerTask", () => {
