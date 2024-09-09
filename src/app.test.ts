@@ -220,3 +220,15 @@ describe("BasicAuthBucket", () => {
     expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
 })
+describe("DollarStoreAppRunner", () => {
+  test("should match snapshot", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack")
+    const cluster = new ecs.Cluster(stack, "Cluster")
+    new customconstructs.DollarStoreAppRunner(stack, "App", {
+      image: ecs.ContainerImage.fromRegistry("nginx:latest"),
+      port: 80,
+    })
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
+})
