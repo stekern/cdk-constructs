@@ -119,7 +119,7 @@ export class DollarStoreAppRunner extends constructs.Construct {
         containerInsights: true,
       })
 
-    const assignPublicIp = props.assignPublicIp ?? !!!props.vpc
+    const assignPublicIp = props.assignPublicIp ?? !props.vpc
 
     const cloudMapNamespace = new servicediscovery.PrivateDnsNamespace(
       this,
