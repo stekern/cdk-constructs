@@ -6,6 +6,9 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 import globals from "globals"
 
 export default [
+  {
+    ignores: ["dist/"],
+  },
   js.configs.recommended,
   {
     files: ['**/*.ts', '**/*.tsx'],
@@ -20,6 +23,7 @@ export default [
       },
       globals: {
         ...globals.node,
+        ...globals.jest
       }
     },
     rules: {
@@ -27,6 +31,7 @@ export default [
       ...typescript.configs['recommended-requiring-type-checking'].rules,
       ...prettier.rules,
       ...eslintPluginPrettier.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
     },
