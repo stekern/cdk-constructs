@@ -48,7 +48,7 @@ async function generateConstructDocs(readmePath: string) {
       /(<!-- CONSTRUCT_DOCUMENTATION_START -->)[\s\S]*?(<!-- CONSTRUCT_DOCUMENTATION_END -->)/,
       `$1\n${readmeContent}\n$2`,
     )
-    console.log(updatedReadme)
+    console.log(updatedReadme + "\n")
   }
 }
 
