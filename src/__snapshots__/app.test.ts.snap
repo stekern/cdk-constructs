@@ -464,20 +464,20 @@ exports[`DollarStoreAppRunner should match snapshot 1`] = `
       },
       "Type": "AWS::ApiGatewayV2::Api",
     },
-    "AppApiANYproxyA8685DF5": {
+    "AppApiANYappproxy66FA2EA1": {
       "Properties": {
         "ApiId": {
           "Ref": "AppApiABD8BF37",
         },
         "AuthorizationType": "NONE",
-        "RouteKey": "ANY /{proxy+}",
+        "RouteKey": "ANY /app/{proxy+}",
         "Target": {
           "Fn::Join": [
             "",
             [
               "integrations/",
               {
-                "Ref": "AppApiANYproxyServiceDiscoveryIntegration0DDCA340",
+                "Ref": "AppApiANYappproxyServiceDiscoveryIntegration9E147E6D",
               },
             ],
           ],
@@ -485,7 +485,7 @@ exports[`DollarStoreAppRunner should match snapshot 1`] = `
       },
       "Type": "AWS::ApiGatewayV2::Route",
     },
-    "AppApiANYproxyServiceDiscoveryIntegration0DDCA340": {
+    "AppApiANYappproxyServiceDiscoveryIntegration9E147E6D": {
       "Properties": {
         "ApiId": {
           "Ref": "AppApiABD8BF37",
@@ -516,6 +516,138 @@ exports[`DollarStoreAppRunner should match snapshot 1`] = `
       },
       "Type": "AWS::ApiGatewayV2::Stage",
     },
+    "AppApiGET978BB214": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "AppApiABD8BF37",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "GET /",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "AppApiGETGatewayIntegrationDF3A0CAA",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "AppApiGETGatewayIntegrationDF3A0CAA": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "AppApiABD8BF37",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "AppGatewayLambdaBF8B6949",
+            "Arn",
+          ],
+        },
+        "PayloadFormatVersion": "2.0",
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "AppApiGETGatewayIntegrationPermission24DF621F": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "AppGatewayLambdaBF8B6949",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "AppApiABD8BF37",
+              },
+              "/*/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "AppApiGETstatus1E36C68A": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "AppApiABD8BF37",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "GET /status",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "AppApiGETGatewayIntegrationDF3A0CAA",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "AppApiGETstatusGatewayIntegrationPermission5F9E30E6": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "AppGatewayLambdaBF8B6949",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "AppApiABD8BF37",
+              },
+              "/*/*/status",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
     "AppCloudMapNamespaceF860E93C": {
       "Properties": {
         "Name": "Stack",
@@ -535,6 +667,103 @@ exports[`DollarStoreAppRunner should match snapshot 1`] = `
         ],
       },
       "Type": "AWS::ECS::Cluster",
+    },
+    "AppGatewayLambdaBF8B6949": {
+      "DependsOn": [
+        "AppGatewayLambdaServiceRoleDefaultPolicy33CDFC48",
+        "AppGatewayLambdaServiceRole7B836B2D",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "<sha256-placeholder>.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "SERVICE_ID": {
+              "Fn::GetAtt": [
+                "AppServiceCloudmapService828333A4",
+                "Id",
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "AppGatewayLambdaServiceRole7B836B2D",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "AppGatewayLambdaServiceRole7B836B2D": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AppGatewayLambdaServiceRoleDefaultPolicy33CDFC48": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "servicediscovery:GetInstancesHealthStatus",
+              "Condition": {
+                "ArnEquals": {
+                  "servicediscovery:ServiceArn": [
+                    {
+                      "Fn::GetAtt": [
+                        "AppServiceCloudmapService828333A4",
+                        "Arn",
+                      ],
+                    },
+                  ],
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AppGatewayLambdaServiceRoleDefaultPolicy33CDFC48",
+        "Roles": [
+          {
+            "Ref": "AppGatewayLambdaServiceRole7B836B2D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "AppScalableTarget07674B5B": {
       "Properties": {

@@ -11,8 +11,12 @@ import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as aas from "aws-cdk-lib/aws-applicationautoscaling"
 import * as constructs from "constructs"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as nodejs from "aws-cdk-lib/aws-lambda-nodejs"
+import * as path from "path"
+import * as iam from "aws-cdk-lib/aws-iam"
 
-export interface DollarStoreAppRunnerProps {
+export interface DollarStoreAppRunnerProps extends cdk.StackProps {
   /**
    * The container image to use for the default container in the ECS service
    */
@@ -31,6 +35,18 @@ export interface DollarStoreAppRunnerProps {
    * @default cdk.Duration.minutes(30)
    */
   maxIdleTime?: cdk.Duration
+  /**
+   * When enabled browser users will be presented with a loading page while
+   * the application is idle. The user will be automatically redirected
+   * to the application once it has scaled up to one instance.
+   *
+   * @remarks
+   * This will lead to your container being made available on
+   * `https://<domain>/app/` instead of `https://<domain>`.
+   *
+   * @default true
+   */
+  enableLoadingPageWhenIdle?: boolean
 
   /**
    * Determines whether to assign a public IP address to the ECS service.
@@ -67,19 +83,25 @@ export interface DollarStoreAppRunnerProps {
 }
 
 /**
- * A construct that makes your container available on the internet in a cost-effective manner.
+ * Make your container available on the internet in a cost-efficient manner.
  *
  * This construct sets up an Amazon API Gateway HTTP API that routes requests to an ECS service using a VPC Link and Cloud Map.
  *
  * The ECS service runs on AWS Fargate Spot and is automatically scaled up and down
- * based on incoming requests. If no requests have been made for a given period of time,
- * the ECS service scales down to zero.
+ * between 0 and 1 containers based on incoming requests. If no requests have been
+ * made for a given period of time, the ECS service scales down to zero.
  *
- * ... in other words, a Dollar Store App Runner.
+ * ... in other words, a dollar store (AWS) App Runner.
  *
- * NOTE: This construct isn't battle-tested, and due to this and the abrupt stops from
- * scaling and Fargate Spot, it is as such more suited for cost-effective hobby
- * projects and experiments than mission-critical workloads.
+ * @remarks
+ * In order to avoid data loss or corruption your container should be designed
+ * to tolerate interruptions that come from spot interruptions or autoscaling events.
+ * This can be done by listening to the SIGTERM signal sent to your container.
+ *
+ * @remarks
+ * This construct isn't battle-tested, and due to this and the abrupt stops from
+ * autoscaling and Fargate Spot, it is as such more suited for hobby projects
+ * and experiments than mission-critical workloads.
  */
 export class DollarStoreAppRunner extends constructs.Construct {
   /**
@@ -149,7 +171,6 @@ export class DollarStoreAppRunner extends constructs.Construct {
         streamPrefix: "ecs",
         logRetention: logs.RetentionDays.TWO_WEEKS,
       }),
-      // TODO: Add health check
       stopTimeout: cdk.Duration.minutes(2),
       image: props.image,
       portMappings: [{ containerPort: props.port }],
@@ -200,27 +221,120 @@ export class DollarStoreAppRunner extends constructs.Construct {
       description: `Created in stack '${cdk.Stack.of(this).stackName}'`,
     })
 
-    const integration = new integrations.HttpServiceDiscoveryIntegration(
-      "ServiceDiscoveryIntegration",
-      this.service.cloudMapService!,
-      {
-        vpcLink: vpcLink,
-      },
+    const cloudMapIntegration =
+      new integrations.HttpServiceDiscoveryIntegration(
+        "ServiceDiscoveryIntegration",
+        this.service.cloudMapService!,
+        {
+          vpcLink: vpcLink,
+        },
+      )
+
+    this.configureAutoScaling(
+      cluster.clusterName,
+      this.service.serviceName,
+      props.maxIdleTime ?? cdk.Duration.minutes(30),
     )
 
-    this.api.addRoutes({
-      path: "/{proxy+}",
-      methods: [apigwv2.HttpMethod.ANY],
-      integration,
+    let routes: apigwv2.AddRoutesOptions[] = [
+      {
+        path: "/{proxy+}",
+        methods: [apigwv2.HttpMethod.ANY],
+        integration: cloudMapIntegration,
+      },
+    ]
+    if (props.enableLoadingPageWhenIdle ?? true) {
+      routes = this.getGatewayLambdaRoutes(
+        this.service.cloudMapService!,
+        cloudMapIntegration,
+      )
+    }
+    routes.forEach((route) => this.api.addRoutes(route))
+  }
+
+  /**
+   * Configures and returns routes for a Lambda function that serves
+   * as a "gateway" to the container. This is used to show a loading screen
+   * in the browser if the container has been scaled down, and redirect the
+   * user if not.
+   */
+  private getGatewayLambdaRoutes(
+    cloudMapService: servicediscovery.IService,
+    cloudMapIntegration: integrations.HttpServiceDiscoveryIntegration,
+  ): apigwv2.AddRoutesOptions[] {
+    const gatewayLambda = new nodejs.NodejsFunction(this, "GatewayLambda", {
+      entry: path.join(__dirname, "..", "assets", "dollar-store-app-runner-gateway-lambda", "index.ts"),
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_20_X,
+      environment: {
+        SERVICE_ID: cloudMapService.serviceId,
+      },
     })
 
+    gatewayLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["servicediscovery:GetInstancesHealthStatus"],
+        resources: ["*"],
+        conditions: {
+          ArnEquals: {
+            "servicediscovery:ServiceArn": [cloudMapService.serviceArn],
+          },
+        },
+      }),
+    )
+
+    const lambdaIntegration = new integrations.HttpLambdaIntegration(
+      "GatewayIntegration",
+      gatewayLambda,
+    )
+    return [
+      {
+        path: "/",
+        methods: [apigwv2.HttpMethod.GET],
+        integration: lambdaIntegration,
+      },
+      {
+        path: "/status",
+        methods: [apigwv2.HttpMethod.GET],
+        integration: lambdaIntegration,
+      },
+      {
+        path: "/app/{proxy+}",
+        methods: [apigwv2.HttpMethod.ANY],
+        integration: cloudMapIntegration,
+      },
+    ]
+  }
+
+  /**
+   * Configures autoscaling for the ECS service based on
+   * HTTP API request metrics and the number of running ECS tasks.
+   */
+  private configureAutoScaling(
+    clusterName: string,
+    serviceName: string,
+    maxIdleTime: cdk.Duration,
+  ) {
     const scalableTarget = new aas.ScalableTarget(this, "ScalableTarget", {
       serviceNamespace: aas.ServiceNamespace.ECS,
       maxCapacity: 1,
       minCapacity: 0,
-      resourceId: `service/${cluster.clusterName}/${this.service.serviceName}`,
+      resourceId: `service/${clusterName}/${serviceName}`,
       scalableDimension: "ecs:service:DesiredCount",
     })
+
+    const scalingMetrics: Record<string, cloudwatch.IMetric> = {
+      requests: this.api.metricCount(),
+      tasks: new cloudwatch.Metric({
+        namespace: "ECS/ContainerInsights",
+        metricName: "RunningTaskCount",
+        dimensionsMap: {
+          ClusterName: clusterName,
+          ServiceName: serviceName,
+        },
+        statistic: "Maximum",
+      }),
+    }
 
     new aas.StepScalingPolicy(this, "ScaleOutPolicy", {
       scalingTarget: scalableTarget,
@@ -229,18 +343,7 @@ export class DollarStoreAppRunner extends constructs.Construct {
       metric: new cloudwatch.MathExpression({
         expression: "IF(FILL(requests, 0) > 0 && FILL(tasks, 0) == 0, 1, 0)",
         period: cdk.Duration.minutes(1),
-        usingMetrics: {
-          requests: this.api.metricCount(),
-          tasks: new cloudwatch.Metric({
-            namespace: "ECS/ContainerInsights",
-            metricName: "RunningTaskCount",
-            dimensionsMap: {
-              ClusterName: cluster.clusterName,
-              ServiceName: this.service.serviceName,
-            },
-            statistic: "Maximum",
-          }),
-        },
+        usingMetrics: scalingMetrics,
       }),
       scalingSteps: [
         { lower: 0, upper: 1, change: 0 },
@@ -254,19 +357,8 @@ export class DollarStoreAppRunner extends constructs.Construct {
       metricAggregationType: aas.MetricAggregationType.MAXIMUM,
       metric: new cloudwatch.MathExpression({
         expression: "IF(FILL(requests, 0) == 0 && FILL(tasks, 0) == 1, 1, 0)",
-        period: props.maxIdleTime || cdk.Duration.minutes(30),
-        usingMetrics: {
-          requests: this.api.metricCount(),
-          tasks: new cloudwatch.Metric({
-            namespace: "ECS/ContainerInsights",
-            metricName: "RunningTaskCount",
-            dimensionsMap: {
-              ClusterName: cluster.clusterName,
-              ServiceName: this.service.serviceName,
-            },
-            statistic: "Maximum",
-          }),
-        },
+        period: maxIdleTime,
+        usingMetrics: scalingMetrics,
       }),
       scalingSteps: [
         { lower: 0, upper: 1, change: 0 },
