@@ -18,6 +18,14 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run build
+      - name: verify docs are up-to-date
+        run: |
+          diff <(npx ts-node utils/generate-docs.ts README.md) README.md || { cat <<EOF
+          The documentation is not up-to-date. Run the following command to update:
+          printf "%s\n" "\$(npx ts-node utils/generate-docs.ts README.md)" > README.md
+          EOF
+          exit 1
+          }
       - name: conditional release
         if: ${{ github.ref == 'refs/heads/dev' }}
         env:
