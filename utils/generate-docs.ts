@@ -1,4 +1,5 @@
 import * as fs from "fs"
+import * as process from "process"
 import { Application, DeclarationReflection, ReflectionKind } from "typedoc"
 
 async function generateConstructDocs(readmePath: string) {
@@ -48,7 +49,7 @@ async function generateConstructDocs(readmePath: string) {
       /(<!-- CONSTRUCT_DOCUMENTATION_START -->)[\s\S]*?(<!-- CONSTRUCT_DOCUMENTATION_END -->)/,
       `$1\n${readmeContent}\n$2`,
     )
-    console.log(updatedReadme + "\n")
+    process.stdout.write(updatedReadme)
   }
 }
 
