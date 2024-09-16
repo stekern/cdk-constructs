@@ -263,7 +263,13 @@ export class DollarStoreAppRunner extends constructs.Construct {
     cloudMapIntegration: integrations.HttpServiceDiscoveryIntegration,
   ): apigwv2.AddRoutesOptions[] {
     const gatewayLambda = new nodejs.NodejsFunction(this, "GatewayLambda", {
-      entry: path.join(__dirname, "..", "assets", "dollar-store-app-runner-gateway-lambda", "index.ts"),
+      entry: path.join(
+        __dirname,
+        "..",
+        "assets",
+        "dollar-store-app-runner-gateway-lambda",
+        "index.ts",
+      ),
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_20_X,
       environment: {
