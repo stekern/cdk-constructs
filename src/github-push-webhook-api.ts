@@ -45,8 +45,7 @@ type Props = {
 }
 
 /**
- * Creates a Lambda-backed API Gateway REST API for receiving GitHub webhook push events
- * and persisting them in a DynamoDB table.
+ * Lambda-backed API Gateway REST API for receiving webhook events from a GitHub App subscribed to push events and storing them in a DynamoDB table.
  */
 export class GitHubPushWebhookApi extends constructs.Construct {
   public readonly webhookReceiverFn: lambda.IFunction

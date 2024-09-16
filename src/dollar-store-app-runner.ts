@@ -98,7 +98,6 @@ export interface DollarStoreAppRunnerProps extends cdk.StackProps {
  * to tolerate interruptions that come from spot interruptions or autoscaling events.
  * This can be done by listening to the SIGTERM signal sent to your container.
  *
- * @remarks
  * This construct isn't battle-tested, and due to this and the abrupt stops from
  * autoscaling and Fargate Spot, it is as such more suited for hobby projects
  * and experiments than mission-critical workloads.

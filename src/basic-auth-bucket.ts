@@ -42,7 +42,7 @@ interface Props extends cdk.StackProps {
 }
 
 /**
- * Sets up an S3 bucket, CloudFront distribution and Lambda@Edge function to serve the contents of the bucket through a dedicated domain and authenticate requests using basic HTTP authentication.
+ * Authenticate requests to S3 using CloudFront on a custom domain, Lambda@Edge and basic HTTP authentication.
  */
 export class BasicAuthBucket extends constructs.Construct {
   public readonly protectedBucket: s3.IBucket

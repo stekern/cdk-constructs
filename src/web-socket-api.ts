@@ -40,9 +40,9 @@ type Props = {
 }
 
 /**
- * Sets up an API Gateway WebSocket API with
- * a custom domain name, connection table in DynamoDB
- * and Lambda handlers for the $connect and $disconnect routes
+ * API Gateway WebSocket API with a custom domain name,
+ * connection table in DynamoDB and Lambda handlers for
+ * the $connect and $disconnect routes.
  */
 export class WebSocketApi extends constructs.Construct {
   public readonly connectionTable

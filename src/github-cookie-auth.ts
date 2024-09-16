@@ -148,11 +148,11 @@ type Props = {
 }
 
 /**
- * Configures:
- * - an API Gateway for authenticating with GitHub using the web application flow,
- * storing the access token in an encrypted cookie.
- * - A Lambda authorizer that can be used together with arbitrary API Gateway REST APIs
- * to use the aforementioned cookie for authentication.
+ * An API Gateway REST API that implements GitHub's
+ * web application flow for generating a user access token,
+ * stores the access token in an encrypted cookie, and a
+ * Lambda authorizer that can use the cookie (and thus access
+ * token) for authentication and authorization purposes.
  */
 export class GitHubCookieAuth extends constructs.Construct {
   public readonly authorizer

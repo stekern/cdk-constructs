@@ -18,7 +18,7 @@ type Props = {
 }
 
 /**
- * Exposes a Step Functions task that can be used in a
+ * Configures a Step Functions task that can be used in a
  * state machine to run the open-source security tool Prowler
  * in the current region as a Fargate task and send the results
  * to AWS Security Hub.
