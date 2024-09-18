@@ -232,3 +232,40 @@ describe("DollarStoreAppRunner", () => {
     expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
 })
+describe("CloudFrontedHttpApi", () => {
+  test("should match snapshot", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack")
+    new customconstructs.CloudFrontedHttpApi(stack, "App")
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
+  test("should match snapshot with custom domain", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack", {
+      env: {
+        region: "us-east-1",
+      },
+    })
+    const domainName = "example.com"
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      stack,
+      "HostedZone",
+      {
+        zoneName: domainName,
+        hostedZoneId: "/hostedzone/ABCDEF12345678",
+      },
+    )
+    const certificate = new cm.Certificate(stack, "Certificate", {
+      domainName: `*.${domainName}`,
+      validation: cm.CertificateValidation.fromDns(hostedZone),
+    })
+    new customconstructs.CloudFrontedHttpApi(stack, "App", {
+      customDomain: {
+        hostedZone,
+        domainName,
+        certificate,
+      },
+    })
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
+})
