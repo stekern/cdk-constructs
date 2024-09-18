@@ -163,13 +163,14 @@ export const handler = async (
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResult> => {
   const serviceId = process.env.SERVICE_ID
+  let redirectUrl = process.env.REDIRECT_URL
 
   if (!serviceId) {
     console.error("Missing required environment variables")
     return buildResponse(500, { error: "Internal server error" })
   }
 
-  const redirectUrl = `https://${event.requestContext.domainName}/app/`
+  redirectUrl = redirectUrl || `https://${event.requestContext.domainName}/app/`
 
   try {
     const ready = await checkReadiness(serviceId)
