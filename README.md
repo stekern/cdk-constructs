@@ -8,6 +8,16 @@ Experimental AWS Cloud Development Kit (CDK) construct library.
 
 Authenticate requests to S3 using CloudFront on a custom domain, Lambda@Edge and basic HTTP authentication.
 
+### [`CloudFrontedHttpApi`](src/cloud-fronted-http-api.ts)
+
+Route all traffic to an AWS API Gateway HTTP API through
+Amazon CloudFront by utilizing a shared secret that CloudFront
+adds to all requests, and which is then validated by API Gateway.
+
+Putting a CloudFront distribution in front of your HTTP API can be especially
+useful if you want to associate an AWS Web Application Firewall (WAF) with
+your HTTP API - something that isn't supported out-of-the-box today.
+
 ### [`DollarStoreAppRunner`](src/dollar-store-app-runner.ts)
 
 Make your container available on the internet in a cost-efficient manner.
