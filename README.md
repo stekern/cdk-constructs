@@ -50,8 +50,8 @@ Lambda-backed API Gateway REST API for receiving webhook events from a GitHub Ap
 
 Configures a Step Functions task that can be used in a
 state machine to run the open-source security tool Prowler
-in the current region as a Fargate task and send the results
-to AWS Security Hub.
+as a Fargate task and send the results to AWS Security Hub
+in one or multiple regions.
 
 ### [`WebSocketApi`](src/web-socket-api.ts)
 
