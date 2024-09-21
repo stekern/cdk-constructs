@@ -24,7 +24,11 @@ const sanitizedTemplate = (stack: cdk.Stack) => {
 describe("SfnProwlerTask", () => {
   test("should match snapshot", () => {
     const app = new cdk.App()
-    const stack = new cdk.Stack(app, "Stack")
+    const stack = new cdk.Stack(app, "Stack", {
+      env: {
+        region: "eu-west-1",
+      },
+    })
     const cluster = new ecs.Cluster(stack, "Cluster")
     new customconstructs.SfnProwlerTask(stack, "ProwlerTask", {
       cluster,

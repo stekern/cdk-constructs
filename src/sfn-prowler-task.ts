@@ -18,7 +18,14 @@ type Props = {
   /**
    * The regions that Prowler should scan
    *
-   * @default - the current AWS region
+   * @remarks
+   * Security Hub needs to be enabled in each of these regions.
+   *
+   * You likely also want to configure one of the regions as
+   * an aggregation region to have a single pane of glass
+   * for all findings from Prowler.
+   *
+   * @default - Prowler scans the current AWS region
    */
   regions?: [string, ...string[]]
   /**
@@ -33,34 +40,36 @@ type Props = {
 /**
  * Configures a Step Functions task that can be used in a
  * state machine to run the open-source security tool Prowler
- * in the current region as a Fargate task and send the results
- * to AWS Security Hub.
+ * as a Fargate task and send the results to AWS Security Hub
+ * in one or multiple regions.
  */
 export class SfnProwlerTask extends constructs.Construct {
   public readonly sfnTask: tasks.EcsRunTask
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
     const account = cdk.Stack.of(this).account
-    const region = cdk.Stack.of(this).region
-    new cr.AwsCustomResource(this, "SecurityHubProwlerIntegration", {
-      policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
-        resources: [`arn:aws:securityhub:${region}:${account}:hub/default`],
-      }),
-      onCreate: {
-        service: "SecurityHub",
-        action: "enableImportFindingsForProduct",
-        parameters: {
-          ProductArn: `arn:aws:securityhub:${region}::product/prowler/prowler`,
+    const currentRegion = cdk.Stack.of(this).region
+    const regions = props.regions || [currentRegion]
+    regions.forEach((region) => {
+      if (cdk.Token.isUnresolved(region)) {
+        throw new Error("Prowler regions can not contain unresolved CDK tokens")
+      }
+      new cr.AwsCustomResource(this, `SecurityHubProwlerIntegration${region}`, {
+        policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
+          resources: [`arn:aws:securityhub:${region}:${account}:hub/default`],
+        }),
+        onCreate: {
+          region,
+          service: "SecurityHub",
+          action: "enableImportFindingsForProduct",
+          // Continue if the integration already has been enabled
+          ignoreErrorCodesMatching: "ResourceConflictException",
+          parameters: {
+            ProductArn: `arn:aws:securityhub:${region}::product/prowler/prowler`,
+          },
+          physicalResourceId: cr.PhysicalResourceId.of(region),
         },
-        physicalResourceId: cr.PhysicalResourceId.of(region),
-      },
-      onDelete: {
-        service: "SecurityHub",
-        action: "disableImportFindingsForProduct",
-        parameters: {
-          ProductSubscriptionArn: `arn:aws:securityhub:${region}::product-subscription/prowler/prowler`,
-        },
-      },
+      })
     })
 
     const taskDefinition = new ecs.TaskDefinition(this, "TaskDefinition", {
@@ -84,7 +93,7 @@ export class SfnProwlerTask extends constructs.Construct {
         "--output-modes",
         "json-asff",
         "--region",
-        ...(props.regions || [region]),
+        ...regions,
         // Enable security hub
         "--security-hub",
         // Only send failed checks
@@ -104,9 +113,10 @@ export class SfnProwlerTask extends constructs.Construct {
           new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
             actions: ["securityhub:BatchImportFindings"],
-            resources: [
-              `arn:aws:securityhub:${region}::product/prowler/prowler`,
-            ],
+            resources: regions.map(
+              (region) =>
+                `arn:aws:securityhub:${region}::product/prowler/prowler`,
+            ),
           }),
           new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
@@ -168,6 +178,7 @@ export class SfnProwlerTask extends constructs.Construct {
     )
 
     this.sfnTask = new tasks.EcsRunTask(this, "FargateTask", {
+      stateName: "ProwlerScan",
       integrationPattern: sfn.IntegrationPattern.RUN_JOB,
       taskDefinition,
       cluster: props.cluster,
