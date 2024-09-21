@@ -15,6 +15,19 @@ type Props = {
    * An optional set of task parameter overrides.
    */
   taskOverrides?: Partial<tasks.EcsRunTaskProps>
+  /**
+   * The regions that Prowler should scan
+   *
+   * @default - the current AWS region
+   */
+  regions?: [string, ...string[]]
+  /**
+   * Whether Prowler should return a non-zero exit code
+   * if any of its findings fails a check (a "rule")
+   *
+   * @default false
+   */
+  exitCode?: boolean
 }
 
 /**
@@ -63,16 +76,20 @@ export class SfnProwlerTask extends constructs.Construct {
       }),
       image: ecs.ContainerImage.fromRegistry(
         // renovate: datasource=docker depName=toniblyx/prowler
-        "toniblyx/prowler:3.9.0@sha256:b249b6870665116b79bf2d02beb80718ce7983d1c629831502a8190683ebfa0d",
+        "toniblyx/prowler:4.3.6@sha256:ad8292c104d6416518426ced45548b086f608d66e7a254891ebfe28657f38281",
       ),
       command: [
         "aws",
+        ...((props.exitCode ?? false) ? [] : ["-z"]),
         "--output-modes",
         "json-asff",
         "--region",
-        region,
-        "--security-hub", // send to security hub
-        "--quiet", // only send failed checks
+        ...(props.regions || [region]),
+        // Enable security hub
+        "--security-hub",
+        // Only send failed checks
+        "--status",
+        "FAIL",
       ],
     })
     taskDefinition.taskRole.addManagedPolicy(
@@ -86,30 +103,7 @@ export class SfnProwlerTask extends constructs.Construct {
         statements: [
           new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
-            actions: [
-              "ds:ListAuthorizedApplications",
-              "ec2:GetEbsEncryptionByDefault",
-              "ecr:Describe*",
-              "elasticfilesystem:DescribeBackupPolicy",
-              "glue:GetConnections",
-              "glue:GetSecurityConfiguration",
-              "glue:SearchTables",
-              "lambda:GetFunction",
-              "s3:GetAccountPublicAccessBlock",
-              "shield:DescribeProtection",
-              "shield:GetSubscriptionState",
-              "ssm:GetDocument",
-              "support:Describe*",
-              "tag:GetTagKeys",
-            ],
-            resources: ["*"],
-          }),
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: [
-              "securityhub:BatchImportFindings",
-              "securityhub:GetFindings",
-            ],
+            actions: ["securityhub:BatchImportFindings"],
             resources: [
               `arn:aws:securityhub:${region}::product/prowler/prowler`,
             ],
@@ -118,6 +112,56 @@ export class SfnProwlerTask extends constructs.Construct {
             effect: iam.Effect.ALLOW,
             actions: ["securityhub:GetFindings"],
             resources: ["*"],
+          }),
+          // Based on https://github.com/prowler-cloud/prowler/blob/master/permissions/prowler-additions-policy.json
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: [
+              "account:Get*",
+              "appstream:Describe*",
+              "appstream:List*",
+              "backup:List*",
+              "cloudtrail:GetInsightSelectors",
+              "codeartifact:List*",
+              "codebuild:BatchGet*",
+              "cognito-idp:GetUserPoolMfaConfig",
+              "dlm:Get*",
+              "drs:Describe*",
+              "ds:Describe*",
+              "ds:Get*",
+              "ds:List*",
+              "dynamodb:GetResourcePolicy",
+              "ec2:GetEbsEncryptionByDefault",
+              "ec2:GetInstanceMetadataDefaults",
+              "ec2:GetSnapshotBlockPublicAccessState",
+              "ecr:Describe*",
+              "ecr:GetRegistryScanningConfiguration",
+              "elasticfilesystem:DescribeBackupPolicy",
+              "glue:GetConnections",
+              "glue:GetSecurityConfiguration*",
+              "glue:SearchTables",
+              "lambda:GetFunction*",
+              "lightsail:GetRelationalDatabases",
+              "logs:FilterLogEvents",
+              "macie2:GetMacieSession",
+              "s3:GetAccountPublicAccessBlock",
+              "shield:DescribeProtection",
+              "shield:GetSubscriptionState",
+              "ssm-incidents:List*",
+              "ssm:GetDocument",
+              "support:Describe*",
+              "tag:GetTagKeys",
+              "wellarchitected:List*",
+            ],
+            resources: ["*"],
+          }),
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ["apigateway:GET"],
+            resources: [
+              "arn:aws:apigateway:*::/restapis/*",
+              "arn:aws:apigateway:*::/apis/*",
+            ],
           }),
         ],
       }),
