@@ -21,6 +21,13 @@ type Props = {
    * @default - the current AWS region
    */
   regions?: [string, ...string[]]
+  /**
+   * Whether Prowler should return a non-zero exit code
+   * if any of its findings fails a check (a "rule")
+   *
+   * @default false
+   */
+  exitCode?: boolean
 }
 
 /**
@@ -73,6 +80,7 @@ export class SfnProwlerTask extends constructs.Construct {
       ),
       command: [
         "aws",
+        ...(props.exitCode ?? false ? [] : ["-z"]),
         "--output-modes",
         "json-asff",
         "--region",

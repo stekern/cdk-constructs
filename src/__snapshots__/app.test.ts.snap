@@ -6863,6 +6863,7 @@ exports[`SfnProwlerTask should match snapshot 1`] = `
           {
             "Command": [
               "aws",
+              "-z",
               "--output-modes",
               "json-asff",
               "--region",
