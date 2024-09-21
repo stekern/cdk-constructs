@@ -71,8 +71,11 @@ export class SfnProwlerTask extends constructs.Construct {
         "json-asff",
         "--region",
         region,
-        "--security-hub", // send to security hub
-        "--quiet", // only send failed checks
+        // Enable security hub
+        "--security-hub",
+        // Only send failed checks
+        "--status",
+        "FAIL",
       ],
     })
     taskDefinition.taskRole.addManagedPolicy(
