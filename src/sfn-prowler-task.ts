@@ -20,7 +20,7 @@ type Props = {
    *
    * @default - the current AWS region
    */
-  regions?: string[]
+  regions?: [string, ...string[]]
 }
 
 /**
