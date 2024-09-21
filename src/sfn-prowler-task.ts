@@ -84,7 +84,7 @@ export class SfnProwlerTask extends constructs.Construct {
         "--output-modes",
         "json-asff",
         "--region",
-        (props.regions || [region]).join(" "),
+        ...(props.regions || [region]),
         // Enable security hub
         "--security-hub",
         // Only send failed checks
