@@ -80,7 +80,7 @@ export class SfnProwlerTask extends constructs.Construct {
       ),
       command: [
         "aws",
-        ...(props.exitCode ?? false ? [] : ["-z"]),
+        ...((props.exitCode ?? false) ? [] : ["-z"]),
         "--output-modes",
         "json-asff",
         "--region",
