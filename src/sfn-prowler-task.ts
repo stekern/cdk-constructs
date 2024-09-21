@@ -15,6 +15,12 @@ type Props = {
    * An optional set of task parameter overrides.
    */
   taskOverrides?: Partial<tasks.EcsRunTaskProps>
+  /**
+   * The regions that Prowler should scan
+   *
+   * @default - the current AWS region
+   */
+  regions?: string[]
 }
 
 /**
@@ -70,7 +76,7 @@ export class SfnProwlerTask extends constructs.Construct {
         "--output-modes",
         "json-asff",
         "--region",
-        region,
+        (props.regions || [region]).join(" "),
         // Enable security hub
         "--security-hub",
         // Only send failed checks
