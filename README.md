@@ -46,6 +46,16 @@ Lambda-backed API Gateway REST API for receiving webhook events from a GitHub Ap
 
 Lambda-backed API Gateway REST API for receiving webhook events from a GitHub App subscribed to workflow runs and storing them in a DynamoDB table.
 
+### [`GrafanaCognitoAuth`](src/grafana-cognito-auth.ts)
+
+Creates a Cognito user pool client and prepares all the
+required Grafana configuration in order to use Cognito as
+the OAuth2 provider.
+
+This allows you to control access to Grafana through Cognito,
+and automatically map Grafana roles (e.g., `Editor`, `Viewer`, etc.)
+to users based on their email and/or Cognito group membership.
+
 ### [`SfnProwlerTask`](src/sfn-prowler-task.ts)
 
 Configures a Step Functions task that can be used in a

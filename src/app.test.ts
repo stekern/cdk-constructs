@@ -3,6 +3,7 @@ import * as assertions from "aws-cdk-lib/assertions"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
+import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as kms from "aws-cdk-lib/aws-kms"
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
@@ -268,6 +269,24 @@ describe("CloudFrontedHttpApi", () => {
         hostedZone,
         domainName,
         certificate,
+      },
+    })
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
+})
+describe("GrafanaCognitoAuth", () => {
+  test("should match snapshot", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack")
+    const userPool = new cognito.UserPool(stack, "UserPool")
+    new customconstructs.GrafanaCognitoAuth(stack, "App", {
+      userPool,
+      cognitoDomain: "auth.example.com",
+      grafanaDomain: "grafana.example.com",
+      authorization: {
+        serverAdmins: {
+          emails: ["admin@example.com"],
+        },
       },
     })
     expect(sanitizedTemplate(stack)).toMatchSnapshot()
