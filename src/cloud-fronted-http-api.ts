@@ -131,6 +131,8 @@ export class CloudFrontedHttpApi extends constructs.Construct {
       defaultBehavior: {
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        originRequestPolicy:
+          cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         origin: new origins.HttpOrigin(
           `${this.api.apiId}.execute-api.${region}.amazonaws.com`,
