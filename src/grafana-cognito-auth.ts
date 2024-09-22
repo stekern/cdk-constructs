@@ -361,8 +361,8 @@ export class GrafanaCognitoAuth extends constructs.Construct {
     this.environment =
       GrafanaCognitoAuth.generateEnvironmentVariables(grafanaConfig)
     this.containerDefinitionOpts = {
-      // renovate: datasource=docker depName=grafana/grafana-oss
       image: ecs.ContainerImage.fromRegistry(
+        // renovate: datasource=docker depName=grafana/grafana-oss
         "grafana/grafana-oss:11.1.5@sha256:f4796c6227f4acb0b0dfef12edc2c732f60f18f65a6cf005313700c0896aaa30",
       ),
       logging: ecs.LogDriver.awsLogs({
