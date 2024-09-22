@@ -42,7 +42,7 @@ export interface DollarStoreAppRunnerProps extends cdk.StackProps {
    *
    * @remarks
    * This will lead to your container being made available on
-   * `https://<domain>/app/` instead of `https://<domain>`.
+   * `https://<domain>/app` instead of `https://<domain>`.
    *
    * @default true
    */
@@ -302,6 +302,11 @@ export class DollarStoreAppRunner extends constructs.Construct {
         path: "/status",
         methods: [apigwv2.HttpMethod.GET],
         integration: lambdaIntegration,
+      },
+      {
+        path: "/app",
+        methods: [apigwv2.HttpMethod.ANY],
+        integration: cloudMapIntegration,
       },
       {
         path: "/app/{proxy+}",

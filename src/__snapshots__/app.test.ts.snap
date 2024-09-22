@@ -1064,20 +1064,20 @@ exports[`DollarStoreAppRunner should match snapshot 1`] = `
       },
       "Type": "AWS::ApiGatewayV2::Api",
     },
-    "AppApiANYappproxy66FA2EA1": {
+    "AppApiANYapp597BEAFD": {
       "Properties": {
         "ApiId": {
           "Ref": "AppApiABD8BF37",
         },
         "AuthorizationType": "NONE",
-        "RouteKey": "ANY /app/{proxy+}",
+        "RouteKey": "ANY /app",
         "Target": {
           "Fn::Join": [
             "",
             [
               "integrations/",
               {
-                "Ref": "AppApiANYappproxyServiceDiscoveryIntegration9E147E6D",
+                "Ref": "AppApiANYappServiceDiscoveryIntegration03093C99",
               },
             ],
           ],
@@ -1085,7 +1085,7 @@ exports[`DollarStoreAppRunner should match snapshot 1`] = `
       },
       "Type": "AWS::ApiGatewayV2::Route",
     },
-    "AppApiANYappproxyServiceDiscoveryIntegration9E147E6D": {
+    "AppApiANYappServiceDiscoveryIntegration03093C99": {
       "Properties": {
         "ApiId": {
           "Ref": "AppApiABD8BF37",
@@ -1105,6 +1105,27 @@ exports[`DollarStoreAppRunner should match snapshot 1`] = `
         "PayloadFormatVersion": "1.0",
       },
       "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "AppApiANYappproxy66FA2EA1": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "AppApiABD8BF37",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "ANY /app/{proxy+}",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "AppApiANYappServiceDiscoveryIntegration03093C99",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
     },
     "AppApiDefaultStage608B359B": {
       "Properties": {
