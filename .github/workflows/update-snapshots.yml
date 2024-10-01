@@ -1,0 +1,36 @@
+name: update snapshots
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  update:
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/snapshots' && github.event.comment.author_association == 'OWNER' }}
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: checkout pr
+        run: hub pr checkout "$PR_NUMBER"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
+      - run: npm ci
+      - run: npm test -- -u
+      - run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add -A
+          if git commit -m "test: update snapshots"; then
+            git push
+          else
+            echo "No changes to commit"
+          fi
