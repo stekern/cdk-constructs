@@ -30,12 +30,12 @@
     ]
   },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "3.669.0",
-    "@aws-sdk/client-kms": "3.669.0",
-    "@aws-sdk/client-secrets-manager": "3.669.0",
-    "@aws-sdk/client-servicediscovery": "3.669.0",
-    "@aws-sdk/lib-dynamodb": "3.669.0",
-    "@aws-sdk/util-dynamodb": "3.669.0",
+    "@aws-sdk/client-dynamodb": "3.670.0",
+    "@aws-sdk/client-kms": "3.670.0",
+    "@aws-sdk/client-secrets-manager": "3.670.0",
+    "@aws-sdk/client-servicediscovery": "3.670.0",
+    "@aws-sdk/lib-dynamodb": "3.670.0",
+    "@aws-sdk/util-dynamodb": "3.670.0",
     "@commitlint/cli": "19.5.0",
     "@commitlint/config-conventional": "19.5.0",
     "@octokit/types": "7.5.1",
