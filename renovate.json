@@ -5,6 +5,13 @@
   "major": {
     "automerge": false
   },
+  "packageRules": [
+    {
+      "matchManagers": ["regex"],
+      "semanticCommitType": "fix",
+      "matchPackageNames": ["toniblyx/prowler"]
+    }
+  ],
   "regexManagers": [
     {
       "fileMatch": ".*\\.ts$",
