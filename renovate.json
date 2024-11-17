@@ -1,5 +1,5 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "automerge": true,
   "automergeType": "branch",
   "major": {
@@ -7,13 +7,14 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["regex"],
+      "matchManagers": ["custom.regex"],
       "semanticCommitType": "fix",
       "matchPackageNames": ["toniblyx/prowler"]
     }
   ],
-  "regexManagers": [
+  "customManagers": [
     {
+      "customType": "regex",
       "fileMatch": ".*\\.ts$",
       "matchStrings": [
         "//\\s*renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\n.*:(?<currentValue>.*?)@(?<currentDigest>sha256:[a-f0-9]+)"
