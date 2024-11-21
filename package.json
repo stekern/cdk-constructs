@@ -34,7 +34,7 @@
     "@aws-sdk/client-kms": "3.696.0",
     "@aws-sdk/client-secrets-manager": "3.696.0",
     "@aws-sdk/client-servicediscovery": "3.696.0",
-    "@aws-sdk/lib-dynamodb": "3.696.0",
+    "@aws-sdk/lib-dynamodb": "3.698.0",
     "@aws-sdk/util-dynamodb": "3.696.0",
     "@commitlint/cli": "19.6.0",
     "@commitlint/config-conventional": "19.6.0",
