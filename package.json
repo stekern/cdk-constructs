@@ -51,7 +51,7 @@
     "aws-sdk": "2.1692.0",
     "constructs": "10.4.2",
     "esbuild": "0.24.0",
-    "eslint": "9.15.0",
+    "eslint": "9.16.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
     "globals": "15.12.0",
