@@ -1,9 +1,9 @@
-import { IRequestEvent, ICache, ISecretStore } from "./ports"
 import {
   getBase64EncodedCredentialsFromHeader,
   getParsedSecretString as getParsedCredentials,
   verifyBasicAuthCredentials,
 } from "./lib"
+import type { ICache, IRequestEvent, ISecretStore } from "./ports"
 export class AuthorizeRequest {
   constructor(
     private secretStore: ISecretStore,

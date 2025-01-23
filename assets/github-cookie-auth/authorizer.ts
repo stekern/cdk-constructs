@@ -1,9 +1,9 @@
-import * as lambdaTypes from "aws-lambda"
-import * as octokitTypes from "@octokit/types"
-import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { KMS } from "@aws-sdk/client-kms"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import type * as octokitTypes from "@octokit/types"
+import type * as lambdaTypes from "aws-lambda"
 import { getCookieValue, httpRequest } from "./lib"
 
 const secretsManager = new SecretsManager()
@@ -19,7 +19,7 @@ const getGitHubAppInstallationsForUser = async (
     host: "api.github.com",
     // We skip pagination here as it's highly unlikely that a
     // user has access to more than 100 installations
-    path: `/user/installations?per_page=100`,
+    path: "/user/installations?per_page=100",
     port: 443,
     method: "GET",
     headers: {
@@ -36,7 +36,7 @@ const getGitHubAppInstallationsForUser = async (
 const getGitHubOrgsForUser = async (token: string, gitHubAppId: string) => {
   const options = {
     host: "api.github.com",
-    path: `/user/orgs?per_page=100`,
+    path: "/user/orgs?per_page=100",
     port: 443,
     method: "GET",
     headers: {
@@ -124,7 +124,7 @@ export const handler = async (
       },
       TableName: authorizerCacheTableName,
     })
-    if (cachedResponse.Item && cachedResponse.Item.cachedResponse) {
+    if (cachedResponse.Item?.cachedResponse) {
       // TODO: Manually check ttl attribute in case there are delays in DynamoDB
       console.log("Using cached authorizer response")
       return cachedResponse.Item
@@ -173,11 +173,9 @@ export const handler = async (
       Accept: "application/json",
       "Content-Type": "application/json",
       "User-Agent": gitHubAppId,
-      Authorization:
-        "Basic " +
-        Buffer.from(`${secrets.clientId}:${secrets.clientSecret}`).toString(
-          "base64",
-        ),
+      Authorization: `Basic ${Buffer.from(
+        `${secrets.clientId}:${secrets.clientSecret}`,
+      ).toString("base64")}`,
       "Content-Length": payload.length,
     },
   }
@@ -197,7 +195,7 @@ export const handler = async (
       throw new Error("Unauthenticated")
     }
     username = userLogin
-  } catch (e) {
+  } catch (_e) {
     throw new Error("Unauthenticated")
   }
 
@@ -254,7 +252,9 @@ export const handler = async (
         Item: {
           PK: value,
           SK: event.methodArn,
-          ttl: Math.floor(Date.now() / 1000 + parseInt(authorizerCacheTtl, 10)),
+          ttl: Math.floor(
+            Date.now() / 1000 + Number.parseInt(authorizerCacheTtl, 10),
+          ),
           cachedResponse: authReponse,
         },
         TableName: authorizerCacheTableName,

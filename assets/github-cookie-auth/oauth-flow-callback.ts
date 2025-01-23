@@ -1,8 +1,8 @@
-import * as lambdaTypes from "aws-lambda"
+import { createHash } from "node:crypto"
 import { KMS } from "@aws-sdk/client-kms"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
-import { createHash } from "crypto"
-import { httpRequest, getCookieValue } from "./lib"
+import type * as lambdaTypes from "aws-lambda"
+import { getCookieValue, httpRequest } from "./lib"
 
 const secretsManager = new SecretsManager()
 const kms = new KMS()

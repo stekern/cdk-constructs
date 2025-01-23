@@ -1,4 +1,4 @@
-import * as octokitWebhooksTypes from "@octokit/webhooks-types"
+import type * as octokitWebhooksTypes from "@octokit/webhooks-types"
 
 export type DbPushEvent = {
   PK: string

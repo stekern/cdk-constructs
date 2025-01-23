@@ -1,5 +1,5 @@
-import * as fs from "fs"
-import * as process from "process"
+import * as fs from "node:fs"
+import * as process from "node:process"
 import { Application, DeclarationReflection, ReflectionKind } from "typedoc"
 
 async function generateConstructDocs(readmePath: string) {
@@ -10,8 +10,11 @@ async function generateConstructDocs(readmePath: string) {
   })
   const project = await app.convert()
   if (project) {
-    let constructs: { name: string; description: string; filename: string }[] =
-      []
+    const constructs: {
+      name: string
+      description: string
+      filename: string
+    }[] = []
     project.children?.forEach((declaration) => {
       if (
         declaration instanceof DeclarationReflection &&

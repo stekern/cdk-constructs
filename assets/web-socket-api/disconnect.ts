@@ -1,6 +1,9 @@
-import { APIGatewayProxyEvent } from "aws-lambda"
-import { DeleteCommandInput, DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
+import {
+  type DeleteCommandInput,
+  DynamoDBDocument,
+} from "@aws-sdk/lib-dynamodb"
+import type { APIGatewayProxyEvent } from "aws-lambda"
 
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
@@ -21,7 +24,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
   try {
     await dynamodb.delete(params)
-  } catch (err) {
+  } catch (_err) {
     console.error("Failed to delete item from DynamoDB")
     return {
       statusCode: 500,

@@ -1,9 +1,9 @@
 import * as cdk from "aws-cdk-lib"
 import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as ecs from "aws-cdk-lib/aws-ecs"
-import * as sm from "aws-cdk-lib/aws-secretsmanager"
-import * as ssm from "aws-cdk-lib/aws-ssm"
 import * as logs from "aws-cdk-lib/aws-logs"
+import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import type * as ssm from "aws-cdk-lib/aws-ssm"
 import * as constructs from "constructs"
 
 export interface GrafanaCognitoAuthProps {
@@ -276,7 +276,7 @@ export class GrafanaCognitoAuth extends constructs.Construct {
       throw new Error("The Grafana sub-path can not be a CDK token")
     }
     const grafanaUrl = `https://${props.grafanaDomain}${
-      props.grafanaSubPath ? "/" + props.grafanaSubPath.replace(/^\//, "") : ""
+      props.grafanaSubPath ? `/${props.grafanaSubPath.replace(/^\//, "")}` : ""
     }`
 
     const grafanaUrlWithoutTrailingSlash = grafanaUrl.replace(/\/+$/, "")
@@ -288,7 +288,7 @@ export class GrafanaCognitoAuth extends constructs.Construct {
       props.grafanaDomain +
       encodeURIComponent(
         props.grafanaSubPath
-          ? "/" + props.grafanaSubPath.replace(/^\//, "")
+          ? `/${props.grafanaSubPath.replace(/^\//, "")}`
           : "",
       )
     const cognitoUrl = `https://${props.cognitoDomain}`
@@ -432,7 +432,7 @@ export class GrafanaCognitoAuth extends constructs.Construct {
         return `(${roleRules.join(" || ")} && '${role.roleName}')`
       })
     return rules.length
-      ? rules.join(" || ") + " || " + defaultRole
+      ? `${rules.join(" || ")} || ${defaultRole}`
       : defaultRole
   }
   /**

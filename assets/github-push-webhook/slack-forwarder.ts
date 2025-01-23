@@ -1,10 +1,10 @@
-import { DbPushEvent, ForwardingRule } from "./types"
-import { URL } from "url"
-import * as https from "https"
-import { DynamoDBStreamEvent } from "aws-lambda"
-import { unmarshall } from "@aws-sdk/util-dynamodb"
+import * as https from "node:https"
+import { URL } from "node:url"
 import type { AttributeValue } from "@aws-sdk/client-dynamodb"
+import { unmarshall } from "@aws-sdk/util-dynamodb"
+import type { DynamoDBStreamEvent } from "aws-lambda"
 import DynamoDB from "aws-sdk/clients/dynamodb"
+import type { DbPushEvent, ForwardingRule } from "./types"
 
 type SlackPayload = {
   channel?: string
@@ -38,30 +38,30 @@ const httpRequest = (
   payload?: string,
   parseJson?: boolean,
 ): Promise<Record<string, unknown> | string | undefined> => {
-  return new Promise(function (resolve, reject) {
-    const req = https.request(params, function (res) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(params, (res) => {
       if (res.statusCode! < 200 || res.statusCode! >= 300) {
         return reject(
           new Error(`Received non-200 status code ${res.statusCode!}`),
         )
       }
       let body = ""
-      res.on("data", function (chunk) {
+      res.on("data", (chunk) => {
         body += chunk
       })
-      res.on("end", function () {
+      res.on("end", () => {
         let result
         if (parseJson) {
           try {
             result = JSON.parse(body) as Record<string, unknown>
-          } catch (e) {
+          } catch (_e) {
             reject(new Error("Failed to deserialize response as JSON"))
           }
         }
         resolve(result)
       })
     })
-    req.on("error", function (err) {
+    req.on("error", (err) => {
       reject(err)
     })
     if (payload) {
@@ -133,7 +133,7 @@ export const handler = async (event: DynamoDBStreamEvent) => {
   const pushEvents = event.Records.filter((r) => r.dynamodb?.NewImage).map(
     (r) =>
       unmarshall(
-        r.dynamodb!.NewImage! as Record<string, AttributeValue>,
+        r.dynamodb?.NewImage! as Record<string, AttributeValue>,
       ) as DbPushEvent,
   )
   const payloads = forwardingRules.flatMap((forwardingRule) => {

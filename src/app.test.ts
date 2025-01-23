@@ -1,13 +1,14 @@
+import { describe, expect, test } from "@jest/globals"
 import * as cdk from "aws-cdk-lib"
 import * as assertions from "aws-cdk-lib/assertions"
-import * as ecs from "aws-cdk-lib/aws-ecs"
-import * as route53 from "aws-cdk-lib/aws-route53"
+import * as apigw from "aws-cdk-lib/aws-apigateway"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as cognito from "aws-cdk-lib/aws-cognito"
-import * as sm from "aws-cdk-lib/aws-secretsmanager"
-import * as kms from "aws-cdk-lib/aws-kms"
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
-import * as apigw from "aws-cdk-lib/aws-apigateway"
+import * as ecs from "aws-cdk-lib/aws-ecs"
+import * as kms from "aws-cdk-lib/aws-kms"
+import * as route53 from "aws-cdk-lib/aws-route53"
+import * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as customconstructs from "."
 
 const sanitizedTemplate = (stack: cdk.Stack) => {
@@ -229,7 +230,7 @@ describe("DollarStoreAppRunner", () => {
   test("should match snapshot", () => {
     const app = new cdk.App()
     const stack = new cdk.Stack(app, "Stack")
-    const cluster = new ecs.Cluster(stack, "Cluster")
+    const _cluster = new ecs.Cluster(stack, "Cluster")
     new customconstructs.DollarStoreAppRunner(stack, "App", {
       image: ecs.ContainerImage.fromRegistry("nginx:latest"),
       port: 80,

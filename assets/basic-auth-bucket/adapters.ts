@@ -1,5 +1,5 @@
-import { ISecretStore, ICache } from "./ports"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import type { ICache, ISecretStore } from "./ports"
 
 export class SecretStore implements ISecretStore {
   private client: SecretsManager

@@ -1,10 +1,10 @@
 import * as cdk from "aws-cdk-lib"
-import * as constructs from "constructs"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as sfn from "aws-cdk-lib/aws-stepfunctions"
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks"
 import * as cr from "aws-cdk-lib/custom-resources"
+import * as constructs from "constructs"
 
 type Props = {
   /**

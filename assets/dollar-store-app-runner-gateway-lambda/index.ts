@@ -1,9 +1,9 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResult } from "aws-lambda"
 import {
-  ServiceDiscoveryClient,
   GetInstancesHealthStatusCommand,
   InstanceNotFound,
+  ServiceDiscoveryClient,
 } from "@aws-sdk/client-servicediscovery"
+import type { APIGatewayProxyEventV2, APIGatewayProxyResult } from "aws-lambda"
 
 const client = new ServiceDiscoveryClient({ region: process.env.AWS_REGION })
 
@@ -177,12 +177,12 @@ export const handler = async (
     if (event.rawPath === "/") {
       if (ready) {
         return buildResponse(302, "", { Location: redirectUrl })
-      } else {
-        return buildResponse(200, loadingHtml(redirectUrl), {
-          "Content-Type": "text/html",
-        })
       }
-    } else if (event.rawPath === "/status") {
+      return buildResponse(200, loadingHtml(redirectUrl), {
+        "Content-Type": "text/html",
+      })
+    }
+    if (event.rawPath === "/status") {
       return buildResponse(200, { ready })
     }
   } catch (error) {

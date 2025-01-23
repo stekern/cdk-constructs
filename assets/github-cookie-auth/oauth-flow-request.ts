@@ -1,11 +1,11 @@
-import * as lambdaTypes from "aws-lambda"
-import { createHash } from "crypto"
+import { createHash } from "node:crypto"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import type * as lambdaTypes from "aws-lambda"
 import { generateRandomString, getUrlWithEncodedQueryParams } from "./lib"
 
 const secretsManager = new SecretsManager()
 
-export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
+export const handler = async (_event: lambdaTypes.APIGatewayProxyEvent) => {
   const [
     nonceCookieName,
     nonceCookieAttributes,
