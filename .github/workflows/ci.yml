@@ -20,9 +20,9 @@ jobs:
       - run: npm run build
       - name: verify docs are up-to-date
         run: |
-          diff <(npx ts-node utils/generate-docs.ts README.md) README.md || { cat <<EOF
+          diff <(npx tsx utils/generate-docs.mts README.md) README.md || { cat <<EOF
           The documentation is not up-to-date. Run the following command to update:
-          printf "%s\n" "\$(npx ts-node utils/generate-docs.ts README.md)" > README.md
+          printf "%s\n" "\$(npx tsx utils/generate-docs.mts README.md)" > README.md
           EOF
           exit 1
           }
