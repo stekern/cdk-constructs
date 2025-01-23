@@ -1,5 +1,5 @@
-import * as lambdaTypes from "aws-lambda"
-import { SecretStore, InMemoryCache } from "./adapters"
+import type * as lambdaTypes from "aws-lambda"
+import { InMemoryCache, SecretStore } from "./adapters"
 import { AuthorizeRequest } from "./core"
 
 const secretStore = new SecretStore()

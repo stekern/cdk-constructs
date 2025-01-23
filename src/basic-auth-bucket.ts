@@ -1,18 +1,18 @@
+import * as crypto from "node:crypto"
+import * as path from "node:path"
 import * as cdk from "aws-cdk-lib"
-import * as constructs from "constructs"
-import * as iam from "aws-cdk-lib/aws-iam"
-import * as route53 from "aws-cdk-lib/aws-route53"
-import * as cm from "aws-cdk-lib/aws-certificatemanager"
-import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import type * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
-import * as njs from "aws-cdk-lib/aws-lambda-nodejs"
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
-import * as logs from "aws-cdk-lib/aws-logs"
+import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
-import * as s3 from "aws-cdk-lib/aws-s3"
+import * as njs from "aws-cdk-lib/aws-lambda-nodejs"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
-import * as crypto from "crypto"
-import * as path from "path"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import type * as sm from "aws-cdk-lib/aws-secretsmanager"
+import * as constructs from "constructs"
 
 interface Props extends cdk.StackProps {
   /**
@@ -122,11 +122,10 @@ export class BasicAuthBucket extends constructs.Construct {
     // snapshot tests.
     const fnVersion = fn.currentVersion.node.defaultChild as lambda.CfnVersion
     fnVersion.overrideLogicalId(
-      "LambdaCurrentVersion" +
-        crypto
-          .createHash("sha256")
-          .update(cdk.Stack.of(this).getLogicalId(fnVersion))
-          .digest("hex"),
+      `LambdaCurrentVersion${crypto
+        .createHash("sha256")
+        .update(cdk.Stack.of(this).getLogicalId(fnVersion))
+        .digest("hex")}`,
     )
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       certificate: props.certificate,

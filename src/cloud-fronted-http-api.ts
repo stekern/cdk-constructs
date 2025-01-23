@@ -1,13 +1,13 @@
 import * as cdk from "aws-cdk-lib"
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2"
-import * as lambda from "aws-cdk-lib/aws-lambda"
-import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
-import * as targets from "aws-cdk-lib/aws-route53-targets"
+import type * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
-import * as route53 from "aws-cdk-lib/aws-route53"
-import * as cm from "aws-cdk-lib/aws-certificatemanager"
-import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
 import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as route53 from "aws-cdk-lib/aws-route53"
+import * as targets from "aws-cdk-lib/aws-route53-targets"
+import * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
 
 export interface CloudFrontedHttpApiProps {
@@ -104,7 +104,7 @@ export class CloudFrontedHttpApi extends constructs.Construct {
         // NOTE: We always return true because if the Lambda authorizer has been called,
         // API Gateway has already verified the existence of the HTTP header - which is
         // where our secet actually is stored
-        `exports.handler = async () => ({ isAuthorized: true })`,
+        "exports.handler = async () => ({ isAuthorized: true })",
       ),
       runtime: lambda.Runtime.NODEJS_20_X,
     })

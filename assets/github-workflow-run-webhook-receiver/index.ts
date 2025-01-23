@@ -1,11 +1,11 @@
-import * as lambdaTypes from "aws-lambda"
-import * as octokitWebhooksTypes from "@octokit/webhooks-types"
-import { createHmac } from "crypto"
-import { ServiceException } from "@smithy/smithy-client"
-import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import { createHmac } from "node:crypto"
+import { timingSafeEqual } from "node:crypto"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
-import { timingSafeEqual } from "crypto"
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import type * as octokitWebhooksTypes from "@octokit/webhooks-types"
+import type { ServiceException } from "@smithy/smithy-client"
+import type * as lambdaTypes from "aws-lambda"
 
 const secretsManager = new SecretsManager()
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
@@ -68,9 +68,7 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const expectedSignature =
-    "sha256=" +
-    createHmac("sha256", secretToken).update(event.body).digest("hex")
+  const expectedSignature = `sha256=${createHmac("sha256", secretToken).update(event.body).digest("hex")}`
   if (!timingSafeStringComparison(signature, expectedSignature)) {
     console.warn(
       `Signature '${signature}' did not match expected signature '${expectedSignature}'`,
@@ -103,13 +101,13 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
       await dynamodb.put({
         TableName: tableName,
         Item: {
-          PK: `${webhook.installation!.id}`,
+          PK: `${webhook.installation?.id}`,
           SK: webhook.workflow.node_id,
           repository: JSON.parse(JSON.stringify(webhook.repository)) as Record<
             string,
             unknown
           >,
-          installationId: `${webhook.installation!.id}`,
+          installationId: `${webhook.installation?.id}`,
           workflow: JSON.parse(JSON.stringify(webhook.workflow)) as Record<
             string,
             unknown
@@ -128,7 +126,7 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
           "#action": "action",
         },
         ExpressionAttributeValues: {
-          ":pk": `${webhook.installation!.id}`,
+          ":pk": `${webhook.installation?.id}`,
           ":sk": webhook.workflow.node_id,
           ":action": webhook.action,
           ":actionRequested": "requested",

@@ -1,6 +1,7 @@
-import * as ssm from "aws-cdk-lib/aws-ssm"
-import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import { describe, expect, it } from "@jest/globals"
 import * as cdk from "aws-cdk-lib"
+import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import * as ssm from "aws-cdk-lib/aws-ssm"
 import { GrafanaCognitoAuth } from "./grafana-cognito-auth"
 
 describe("GrafanaCognitoAuth", () => {

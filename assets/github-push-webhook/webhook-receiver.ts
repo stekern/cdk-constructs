@@ -1,9 +1,9 @@
-import { DbPushEvent } from "./types"
-import * as lambdaTypes from "aws-lambda"
-import { createHmac, timingSafeEqual } from "crypto"
-import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import { createHmac, timingSafeEqual } from "node:crypto"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import type * as lambdaTypes from "aws-lambda"
+import type { DbPushEvent } from "./types"
 
 const secretsManager = new SecretsManager()
 
@@ -59,9 +59,7 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const expectedSignature =
-    "sha256=" +
-    createHmac("sha256", secretToken).update(event.body).digest("hex")
+  const expectedSignature = `sha256=${createHmac("sha256", secretToken).update(event.body).digest("hex")}`
   if (!timingSafeStringComparison(signature, expectedSignature)) {
     console.warn(
       `Signature '${signature}' did not match expected signature '${expectedSignature}'`,

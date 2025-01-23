@@ -1,4 +1,4 @@
-import { ForwardingRule, DbPushEvent } from "./types"
+import type { DbPushEvent, ForwardingRule } from "./types"
 
 export const pushEvent: DbPushEvent = {
   PK: "pk",

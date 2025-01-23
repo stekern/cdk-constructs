@@ -1,6 +1,6 @@
-import { createSign, randomFillSync, timingSafeEqual } from "crypto"
-import * as https from "https"
-import { ServiceException } from "@smithy/smithy-client"
+import { createSign, randomFillSync, timingSafeEqual } from "node:crypto"
+import * as https from "node:https"
+import type { ServiceException } from "@smithy/smithy-client"
 
 export const getUrlWithEncodedQueryParams = (
   url: string,
@@ -9,11 +9,11 @@ export const getUrlWithEncodedQueryParams = (
   const encodedQueryParams = Object.entries(queryParams)
     .map(([name, value]) => `${name}=${encodeURIComponent(value)}`)
     .join("&")
-  return `${url}${encodedQueryParams ? "?" + encodedQueryParams : ""}`
+  return `${url}${encodedQueryParams ? `?${encodedQueryParams}` : ""}`
 }
 
 export const getCookieValue = (cookieHeader: string, cookieName: string) =>
-  `; ${cookieHeader}`.split(`; ${cookieName}=`).pop()!.split(";")[0] ||
+  `; ${cookieHeader}`.split(`; ${cookieName}=`).pop()?.split(";")[0] ||
   undefined
 
 export const generateRandomString = (n: number, allowedCharacters: string) => {
@@ -29,28 +29,28 @@ export const httpRequest = (
   params: https.RequestOptions,
   payload?: string,
 ): Promise<Record<string, unknown> | Record<string, unknown>[] | undefined> => {
-  return new Promise(function (resolve, reject) {
-    const req = https.request(params, function (res) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(params, (res) => {
       if (res.statusCode! < 200 || res.statusCode! >= 300) {
         return reject(
           new Error(`Received non - 200 status code ${res.statusCode!} `),
         )
       }
       let body = ""
-      res.on("data", function (chunk) {
+      res.on("data", (chunk) => {
         body += chunk
       })
-      res.on("end", function () {
+      res.on("end", () => {
         let result
         try {
           result = JSON.parse(body) as Record<string, string>
-        } catch (e) {
+        } catch (_e) {
           reject(new Error("Failed to deserialize response as JSON"))
         }
         resolve(result)
       })
     })
-    req.on("error", function (err) {
+    req.on("error", (err) => {
       reject(err)
     })
     if (payload) {

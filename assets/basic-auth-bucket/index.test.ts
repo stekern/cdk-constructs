@@ -1,6 +1,7 @@
-import { AuthorizeRequest } from "./core"
+import { describe, expect, test } from "@jest/globals"
 import { InMemoryCache, InMemorySecretStore } from "./adapters"
-import { validate, getBase64EncodedCredentialsFromHeader } from "./lib"
+import { AuthorizeRequest } from "./core"
+import { getBase64EncodedCredentialsFromHeader, validate } from "./lib"
 
 describe("integration tests", () => {
   test("correct credentials should succeed", async () => {
@@ -16,9 +17,7 @@ describe("integration tests", () => {
     const manager = new AuthorizeRequest(secretStore, cache)
     const res = await manager.handle({
       secretName,
-      authorizationHeader:
-        "Basic " +
-        Buffer.from(`${secret.username}:${secret.password}`).toString("base64"),
+      authorizationHeader: `Basic ${Buffer.from(`${secret.username}:${secret.password}`).toString("base64")}`,
     })
     expect(res).toEqual(true)
   })
@@ -33,11 +32,9 @@ describe("integration tests", () => {
       [secretName]: JSON.stringify(secret),
     })
     const manager = new AuthorizeRequest(secretStore, cache)
-    const res = await manager.handle({
+    const _res = await manager.handle({
       secretName,
-      authorizationHeader:
-        "Basic " +
-        Buffer.from(`${secret.username}:${secret.password}`).toString("base64"),
+      authorizationHeader: `Basic ${Buffer.from(`${secret.username}:${secret.password}`).toString("base64")}`,
     })
     const cachedSecret = cache.get(secretName)
     expect(cachedSecret).toEqual(JSON.stringify(secret))
@@ -55,11 +52,9 @@ describe("integration tests", () => {
     const manager = new AuthorizeRequest(secretStore, cache)
     const res = await manager.handle({
       secretName,
-      authorizationHeader:
-        "Basic " +
-        Buffer.from(`${secret.username}1:${secret.password}`).toString(
-          "base64",
-        ),
+      authorizationHeader: `Basic ${Buffer.from(
+        `${secret.username}1:${secret.password}`,
+      ).toString("base64")}`,
     })
     expect(res).toEqual(false)
   })
@@ -74,11 +69,9 @@ describe("integration tests", () => {
     const manager = new AuthorizeRequest(secretStore, cache)
     const res = await manager.handle({
       secretName,
-      authorizationHeader:
-        "Basic " +
-        Buffer.from(`${secret.username}1:${secret.password}`).toString(
-          "base64",
-        ),
+      authorizationHeader: `Basic ${Buffer.from(
+        `${secret.username}1:${secret.password}`,
+      ).toString("base64")}`,
     })
     expect(res).toEqual(false)
   })

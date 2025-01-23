@@ -1,7 +1,7 @@
-import { timingSafeEqual } from "crypto"
+import { timingSafeEqual } from "node:crypto"
 
 export const getBase64EncodedCredentialsFromHeader = (header: string) => {
-  const [authScheme, base64Payload, ...rest] = header.split(" ")
+  const [authScheme, base64Payload, ..._rest] = header.split(" ")
   if (authScheme.toLowerCase() === "basic") {
     return base64Payload
   }
@@ -37,8 +37,7 @@ export const verifyBasicAuthCredentials = (
   }
   const authScheme = "basic"
   const clientAuthHeader = `${authScheme} ${base64EncodedCredentials}`
-  const allowedAuthHeader =
-    `${authScheme} ` + Buffer.from(`${username}:${password}`).toString("base64")
+  const allowedAuthHeader = `${authScheme} ${Buffer.from(`${username}:${password}`).toString("base64")}`
   return timingSafeStringComparison(allowedAuthHeader, clientAuthHeader)
 }
 

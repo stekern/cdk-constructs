@@ -1,16 +1,16 @@
+import * as path from "node:path"
 import * as cdk from "aws-cdk-lib"
-import * as constructs from "constructs"
-import * as route53 from "aws-cdk-lib/aws-route53"
-import * as route53targets from "aws-cdk-lib/aws-route53-targets"
+import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2"
+import type * as apigwv2Authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers"
+import * as apigwv2Integrations from "aws-cdk-lib/aws-apigatewayv2-integrations"
+import type * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
 import * as lambda from "aws-cdk-lib/aws-lambda"
-import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2"
-import * as apigwv2Integrations from "aws-cdk-lib/aws-apigatewayv2-integrations"
-import * as apigwv2Authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers"
-import * as cm from "aws-cdk-lib/aws-certificatemanager"
-import * as logs from "aws-cdk-lib/aws-logs"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
-import * as path from "path"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as route53 from "aws-cdk-lib/aws-route53"
+import * as route53targets from "aws-cdk-lib/aws-route53-targets"
+import * as constructs from "constructs"
 
 type Props = {
   /**
@@ -113,7 +113,7 @@ export class WebSocketApi extends constructs.Construct {
       certificate: props.certificate,
       domainName: props.domainName,
     })
-    const apiMapping = new apigwv2.ApiMapping(this, "ApiMapping", {
+    const _apiMapping = new apigwv2.ApiMapping(this, "ApiMapping", {
       api: this.api,
       domainName: this.domainName,
       stage: stage,
