@@ -363,7 +363,7 @@ export class GrafanaCognitoAuth extends constructs.Construct {
     this.containerDefinitionOpts = {
       image: ecs.ContainerImage.fromRegistry(
         // renovate: datasource=docker depName=grafana/grafana-oss
-        "grafana/grafana-oss:11.5.2@sha256:163be84f32fdf9d204c6b8b2f2cccb04628baa365cf973eb1c32d1faaa8fbfc3",
+        "grafana/grafana-oss:11.5.3@sha256:c319c1539496215b01b5f76294a3d200832322404b91731ca62ca5a9d24cdf7e",
       ),
       logging: ecs.LogDriver.awsLogs({
         streamPrefix: "ecs",
