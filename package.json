@@ -39,7 +39,7 @@
     "@commitlint/config-conventional": "19.8.1",
     "@octokit/types": "7.5.1",
     "@octokit/webhooks-types": "6.11.0",
-    "@tsconfig/node16": "16.1.3",
+    "@tsconfig/node16": "16.1.4",
     "@types/aws-lambda": "8.10.149",
     "@types/jest": "29.5.14",
     "@types/node": "20.17.51",
