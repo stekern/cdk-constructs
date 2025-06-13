@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "3.828.0",
-    "@aws-sdk/client-kms": "3.828.0",
+    "@aws-sdk/client-kms": "3.829.0",
     "@aws-sdk/client-secrets-manager": "3.828.0",
     "@aws-sdk/client-servicediscovery": "3.828.0",
     "@aws-sdk/lib-dynamodb": "3.828.0",
