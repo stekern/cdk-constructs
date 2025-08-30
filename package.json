@@ -11,6 +11,7 @@
     "build": "tsc --noEmit && tsc --project tsconfig.build.json && npm run copy-assets",
     "copy-assets": "find assets -type f -not -name '*.snap' -not -name '*.spec.ts' -not -name 'mocks.ts' -not -name 'types.ts' -exec bash -c 'path=\"{}\" && mkdir -p \"dist/${path%/*}\" && cp \"$path\" \"dist/$path\"' ';'",
     "lint": "biome check --diagnostic-level=error",
+    "lint:fix": "biome check --fix",
     "test": "jest"
   },
   "bin": {

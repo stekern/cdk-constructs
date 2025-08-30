@@ -139,6 +139,7 @@ export function sanitize(
         const result = rule.transform(value, ctx)
         if (result === DISCARD) return
         if (result !== undefined) {
+          // biome-ignore lint:
           value = result
         }
       }

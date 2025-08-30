@@ -6,9 +6,5 @@
     "declaration": true,
     "declarationMap": true
   },
-  "include": [
-    "src",
-    "assets",
-    "utils"
-  ]
+  "include": ["src", "assets", "utils"]
 }

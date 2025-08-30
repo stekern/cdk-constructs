@@ -1,12 +1,12 @@
 import { describe, expect, it } from "@jest/globals"
 import {
+  DISCARD,
+  type Rule,
   matchesPattern,
   sanitize,
-  DISCARD,
-  shouldProcessFile,
-  shouldProcessDirectory,
-  Rule,
   sanitizeCloudAssembly,
+  shouldProcessDirectory,
+  shouldProcessFile,
 } from "./utils"
 
 describe("utils pattern matching", () => {
@@ -291,4 +291,3 @@ describe("utils pattern matching", () => {
     })
   })
 })
-
