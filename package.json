@@ -13,7 +13,10 @@
     "lint": "biome check --diagnostic-level=error",
     "test": "jest"
   },
-  "files": ["dist/**/*"],
+  "bin": {
+    "generate-cdk-snapshots": "bin/generate-cdk-snapshots.js"
+  },
+  "files": ["dist/**/*", "bin"],
   "publishConfig": {
     "access": "public"
   },
