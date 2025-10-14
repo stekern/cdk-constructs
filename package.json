@@ -46,7 +46,7 @@
     "@tsconfig/node16": "16.1.5",
     "@types/aws-lambda": "8.10.155",
     "@types/jest": "29.5.14",
-    "@types/node": "20.19.12",
+    "@types/node": "20.19.21",
     "aws-cdk": "2.1028.0",
     "aws-cdk-lib": "2.177.0",
     "aws-sdk": "2.1692.0",
