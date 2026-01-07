@@ -1,9 +1,25 @@
 import { createHash } from "node:crypto"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm"
 import type * as lambdaTypes from "aws-lambda"
 import { generateRandomString, getUrlWithEncodedQueryParams } from "./lib"
 
 const secretsManager = new SecretsManager()
+const ssmClient = new SSMClient({})
+
+async function getSecretValue(
+  name: string,
+  type: string,
+): Promise<string | undefined> {
+  if (type === "parameter-store") {
+    const result = await ssmClient.send(
+      new GetParameterCommand({ Name: name, WithDecryption: true }),
+    )
+    return result.Parameter?.Value
+  }
+  const result = await secretsManager.getSecretValue({ SecretId: name })
+  return result.SecretString
+}
 
 export const handler = async (_event: lambdaTypes.APIGatewayProxyEvent) => {
   const [
@@ -12,6 +28,7 @@ export const handler = async (_event: lambdaTypes.APIGatewayProxyEvent) => {
     callbackUrl,
     responseHeaders,
     secretName,
+    secretType,
   ] = [
     process.env.NONCE_COOKIE_NAME,
     process.env.NONCE_COOKIE_ATTRIBUTES,
@@ -20,6 +37,7 @@ export const handler = async (_event: lambdaTypes.APIGatewayProxyEvent) => {
       ? (JSON.parse(process.env.RESPONSE_HEADERS) as Record<string, string>)
       : undefined,
     process.env.SECRET_NAME,
+    process.env.SECRET_TYPE || "secrets-manager",
   ]
   if (!nonceCookieName || !secretName || !callbackUrl) {
     console.error("Missing required environment variables")
@@ -31,18 +49,15 @@ export const handler = async (_event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
-
-  const secrets = secret.SecretString
-    ? (JSON.parse(secret.SecretString) as {
+  const secretString = await getSecretValue(secretName, secretType)
+  const secrets = secretString
+    ? (JSON.parse(secretString) as {
         clientId: string
         clientSecret: string
       })
     : null
   if (!secrets || !secrets.clientId || !secrets.clientSecret) {
-    console.error("Could not properly read secrets from Secrets Manager")
+    console.error("Could not properly read secret")
     return {
       headers: {
         ...responseHeaders,

@@ -10,7 +10,12 @@ import * as logs from "aws-cdk-lib/aws-logs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
+import type * as ssm from "aws-cdk-lib/aws-ssm"
 import * as constructs from "constructs"
+
+type SecretOrParameter = sm.ISecret | ssm.IStringParameter
+
+const isSecret = (v: SecretOrParameter): v is sm.ISecret => "secretName" in v
 
 type Props = {
   /**
@@ -23,14 +28,14 @@ type Props = {
    */
   gitHubAppId: string
   /**
-   * A Secrets Manager secret containing the client credentials
+   * A Secrets Manager secret or SSM parameter containing the client credentials
    * for the GitHub App in JSON format:
    * {
    *   "clientId": "<client-id>",
    *   "clientSecret": "<client-secret>"
    * }
    */
-  clientCredentials: sm.ISecret
+  clientCredentials: SecretOrParameter
   authCookieConfiguration: {
     /**
      * A KMS key that will be used to encrypt the access token
@@ -209,7 +214,12 @@ export class GitHubCookieAuth extends constructs.Construct {
       logRetention: logs.RetentionDays.ONE_MONTH,
       environment: {
         ALLOWED_ORIGIN: props.apiConfiguration.allowedOrigin,
-        SECRET_NAME: props.clientCredentials.secretName,
+        SECRET_NAME: isSecret(props.clientCredentials)
+          ? props.clientCredentials.secretName
+          : props.clientCredentials.parameterName,
+        SECRET_TYPE: isSecret(props.clientCredentials)
+          ? "secrets-manager"
+          : "parameter-store",
         AUTH_COOKIE_NAME: authCookieName,
         AUTH_COOKIE_ENCRYPTION_KEY_ARN:
           props.authCookieConfiguration.encryptionKey.keyArn,
@@ -248,7 +258,12 @@ export class GitHubCookieAuth extends constructs.Construct {
       environment: {
         RESPONSE_HEADERS: JSON.stringify(responseHeaders),
         NONCE_COOKIE_NAME: nonceCookieName,
-        SECRET_NAME: props.clientCredentials.secretName,
+        SECRET_NAME: isSecret(props.clientCredentials)
+          ? props.clientCredentials.secretName
+          : props.clientCredentials.parameterName,
+        SECRET_TYPE: isSecret(props.clientCredentials)
+          ? "secrets-manager"
+          : "parameter-store",
         CALLBACK_URL: `https://${props.apiConfiguration.domainName}/callback`,
         NONCE_COOKIE_ATTRIBUTES: Object.entries(nonceCookieAttributes)
           .map(([attribute, value]) => {
@@ -279,7 +294,12 @@ export class GitHubCookieAuth extends constructs.Construct {
       environment: {
         REDIRECT_URL: props.apiConfiguration.redirectUrl,
         NONCE_COOKIE_NAME: nonceCookieName,
-        SECRET_NAME: props.clientCredentials.secretName,
+        SECRET_NAME: isSecret(props.clientCredentials)
+          ? props.clientCredentials.secretName
+          : props.clientCredentials.parameterName,
+        SECRET_TYPE: isSecret(props.clientCredentials)
+          ? "secrets-manager"
+          : "parameter-store",
         RESPONSE_HEADERS: JSON.stringify(responseHeaders),
         AUTH_COOKIE_NAME: authCookieName,
         AUTH_COOKIE_ENCRYPTION_KEY_ARN:
