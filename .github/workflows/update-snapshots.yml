@@ -19,9 +19,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Get Node.js version
+        id: nodejs-version
+        run: version="$(cat .tool-versions | grep '^nodejs' | cut -d' ' -f2)" && echo "result=$version" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: ${{ steps.nodejs-version.outputs.result }}
           cache: "npm"
       - run: npm ci
       - run: npm test -- -u

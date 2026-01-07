@@ -1,7 +1,7 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "node16",
+    "moduleResolution": "nodenext",
     "outDir": "dist",
     "declaration": true,
     "declarationMap": true

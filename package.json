@@ -1,5 +1,8 @@
 {
   "name": "@stekern/cdk-constructs",
+  "engines": {
+    "node": ">=22"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/stekern/cdk-constructs.git"
@@ -46,10 +49,10 @@
     "@commitlint/config-conventional": "19.8.1",
     "@octokit/types": "7.5.1",
     "@octokit/webhooks-types": "6.11.0",
-    "@tsconfig/node16": "16.1.8",
+    "@tsconfig/node22": "22.0.1",
     "@types/aws-lambda": "8.10.159",
     "@types/jest": "29.5.14",
-    "@types/node": "20.19.25",
+    "@types/node": "22.15.29",
     "aws-cdk": "2.1100.3",
     "aws-cdk-lib": "2.233.0",
     "aws-sdk": "2.1692.0",
