@@ -14,7 +14,7 @@ jobs:
       - name: Get Node.js version
         id: nodejs-version
         run: version="$(cat .tool-versions | grep '^nodejs' | cut -d' ' -f2)" && echo "result=$version" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ steps.nodejs-version.outputs.result }}
           cache: "npm"
