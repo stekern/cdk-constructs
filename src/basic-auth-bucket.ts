@@ -77,7 +77,7 @@ export class BasicAuthBucket extends constructs.Construct {
         ),
       },
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_18_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       timeout: cdk.Duration.seconds(5),
       logRetention: logs.RetentionDays.ONE_MONTH,
     })

@@ -270,7 +270,7 @@ export class DollarStoreAppRunner extends constructs.Construct {
         "index.ts",
       ),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       environment: {
         SERVICE_ID: cloudMapService.serviceId,
       },

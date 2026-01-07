@@ -3,7 +3,6 @@ import { URL } from "node:url"
 import type { AttributeValue } from "@aws-sdk/client-dynamodb"
 import { unmarshall } from "@aws-sdk/util-dynamodb"
 import type { DynamoDBStreamEvent } from "aws-lambda"
-import DynamoDB from "aws-sdk/clients/dynamodb"
 import type { DbPushEvent, ForwardingRule } from "./types"
 
 type SlackPayload = {

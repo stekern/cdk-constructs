@@ -106,7 +106,7 @@ export class CloudFrontedHttpApi extends constructs.Construct {
         // where our secet actually is stored
         "exports.handler = async () => ({ isAuthorized: true })",
       ),
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
     })
     this.api = props?.api || new apigwv2.HttpApi(this, "Api")
     this.authorizer = new apigwv2.HttpAuthorizer(this, "Authorizer", {
