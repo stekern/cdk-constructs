@@ -10,7 +10,7 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Get Node.js version
         id: nodejs-version
         run: version="$(cat .tool-versions | grep '^nodejs' | cut -d' ' -f2)" && echo "result=$version" >> "$GITHUB_OUTPUT"
