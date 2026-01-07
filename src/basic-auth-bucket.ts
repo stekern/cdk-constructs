@@ -12,7 +12,12 @@ import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
+import type * as ssm from "aws-cdk-lib/aws-ssm"
 import * as constructs from "constructs"
+
+type SecretOrParameter = sm.ISecret | ssm.IStringParameter
+
+const isSecret = (v: SecretOrParameter): v is sm.ISecret => "secretName" in v
 
 interface Props extends cdk.StackProps {
   /**
@@ -29,16 +34,16 @@ interface Props extends cdk.StackProps {
    */
   certificate: cm.ICertificate
   /**
-   * Secret set up in us-east-1 containing basic auth credentials.
+   * Secret or SSM parameter set up in us-east-1 containing basic auth credentials.
    *
-   * NOTE: The secret is expected to be in the following format:
+   * NOTE: The secret/parameter is expected to be in the following format:
    *
    * {
    *   "username": "<username>",
    *   "password:" "<password>"
    * }
    */
-  secret: sm.ISecret
+  secret: SecretOrParameter
 }
 
 /**
@@ -54,8 +59,15 @@ export class BasicAuthBucket extends constructs.Construct {
         "The construct needs to be set up in a stack in us-east-1",
       )
     }
+    const secretName = isSecret(props.secret)
+      ? props.secret.secretName
+      : props.secret.parameterName
+    const secretType = isSecret(props.secret)
+      ? "secrets-manager"
+      : "parameter-store"
     const environmentVariables: { [key: string]: string } = {
-      SECRET_NAME: props.secret.secretName,
+      SECRET_NAME: secretName,
+      SECRET_TYPE: secretType,
     }
     Object.entries(environmentVariables).forEach(([key, val]) => {
       if (cdk.Token.isUnresolved(val)) {

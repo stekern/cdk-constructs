@@ -1,11 +1,27 @@
 import { createHmac, timingSafeEqual } from "node:crypto"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import type * as lambdaTypes from "aws-lambda"
 import type { DbPushEvent } from "./types"
 
 const secretsManager = new SecretsManager()
+const ssmClient = new SSMClient({})
+
+async function getSecretValue(
+  name: string,
+  type: string,
+): Promise<string | undefined> {
+  if (type === "parameter-store") {
+    const result = await ssmClient.send(
+      new GetParameterCommand({ Name: name, WithDecryption: true }),
+    )
+    return result.Parameter?.Value
+  }
+  const result = await secretsManager.getSecretValue({ SecretId: name })
+  return result.SecretString
+}
 
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
@@ -24,6 +40,7 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
 
   const tableName = process.env.TABLE_NAME
   const secretName = process.env.SECRET_NAME
+  const secretType = process.env.SECRET_TYPE || "secrets-manager"
 
   if (!tableName || !secretName) {
     console.error("Missing required environment variables")
@@ -47,13 +64,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
-
-  const secretToken = secret.SecretString || null
+  const secretToken = await getSecretValue(secretName, secretType)
   if (!secretToken) {
-    console.error("Could not properly read secret from Secrets Manager")
+    console.error("Could not properly read secret")
     return {
       statusCode: 500,
     }

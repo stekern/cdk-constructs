@@ -2,13 +2,29 @@ import { createHmac } from "node:crypto"
 import { timingSafeEqual } from "node:crypto"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import type * as octokitWebhooksTypes from "@octokit/webhooks-types"
 import type { ServiceException } from "@smithy/smithy-client"
 import type * as lambdaTypes from "aws-lambda"
 
 const secretsManager = new SecretsManager()
+const ssmClient = new SSMClient({})
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
+
+async function getSecretValue(
+  name: string,
+  type: string,
+): Promise<string | undefined> {
+  if (type === "parameter-store") {
+    const result = await ssmClient.send(
+      new GetParameterCommand({ Name: name, WithDecryption: true }),
+    )
+    return result.Parameter?.Value
+  }
+  const result = await secretsManager.getSecretValue({ SecretId: name })
+  return result.SecretString
+}
 
 export const timingSafeStringComparison = (a: string, b: string) => {
   try {
@@ -32,6 +48,7 @@ export const isAWSError = (arg: unknown): arg is ServiceException => {
 export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   const tableName = process.env.TABLE_NAME
   const secretName = process.env.SECRET_NAME
+  const secretType = process.env.SECRET_TYPE || "secrets-manager"
   const gitHubAppId = process.env.GITHUB_APP_ID
 
   if (!tableName || !secretName || !gitHubAppId) {
@@ -56,13 +73,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
-
-  const secretToken = secret.SecretString || null
+  const secretToken = await getSecretValue(secretName, secretType)
   if (!secretToken) {
-    console.error("Could not properly read secret from Secrets Manager")
+    console.error("Could not properly read secret")
     return {
       statusCode: 500,
     }

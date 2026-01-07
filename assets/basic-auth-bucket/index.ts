@@ -1,8 +1,11 @@
 import type * as lambdaTypes from "aws-lambda"
-import { InMemoryCache, SecretStore } from "./adapters"
+import { InMemoryCache, ParameterStore, SecretStore } from "./adapters"
 import { AuthorizeRequest } from "./core"
 
-const secretStore = new SecretStore()
+const secretStore =
+  process.env.SECRET_TYPE === "parameter-store"
+    ? new ParameterStore()
+    : new SecretStore()
 const cache = new InMemoryCache()
 
 export const handler: lambdaTypes.CloudFrontRequestHandler = async (event) => {

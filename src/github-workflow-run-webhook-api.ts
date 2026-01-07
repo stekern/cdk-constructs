@@ -9,7 +9,12 @@ import * as logs from "aws-cdk-lib/aws-logs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
+import type * as ssm from "aws-cdk-lib/aws-ssm"
 import * as constructs from "constructs"
+
+type SecretOrParameter = sm.ISecret | ssm.IStringParameter
+
+const isSecret = (v: SecretOrParameter): v is sm.ISecret => "secretName" in v
 
 type Props = {
   /**
@@ -17,9 +22,9 @@ type Props = {
    */
   gitHubAppId: string
   /**
-   * A secret containing a token used to sign and validate requests.
+   * A secret or SSM parameter containing a token used to sign and validate requests.
    */
-  gitHubWebhookSecret: sm.ISecret
+  gitHubWebhookSecret: SecretOrParameter
   /**
    * A DynamoDB table to store received workflow runs in.
    *
@@ -69,7 +74,12 @@ export class GitHubWorkflowRunWebhookApi extends constructs.Construct {
         logRetention: logs.RetentionDays.ONE_MONTH,
         environment: {
           GITHUB_APP_ID: props.gitHubAppId,
-          SECRET_NAME: props.gitHubWebhookSecret.secretName,
+          SECRET_NAME: isSecret(props.gitHubWebhookSecret)
+            ? props.gitHubWebhookSecret.secretName
+            : props.gitHubWebhookSecret.parameterName,
+          SECRET_TYPE: isSecret(props.gitHubWebhookSecret)
+            ? "secrets-manager"
+            : "parameter-store",
           TABLE_NAME: props.table.tableName,
         },
       },

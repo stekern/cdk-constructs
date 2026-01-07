@@ -10,14 +10,19 @@ import * as logs from "aws-cdk-lib/aws-logs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
+import type * as ssm from "aws-cdk-lib/aws-ssm"
 import * as constructs from "constructs"
 import type { ForwardingRule } from "../assets/github-push-webhook/types"
 
+type SecretOrParameter = sm.ISecret | ssm.IStringParameter
+
+const isSecret = (v: SecretOrParameter): v is sm.ISecret => "secretName" in v
+
 type Props = {
   /**
-   * A secret containing a token used to sign and validate requests from GitHub.
+   * A secret or SSM parameter containing a token used to sign and validate requests from GitHub.
    */
-  gitHubWebhookSecret: sm.ISecret
+  gitHubWebhookSecret: SecretOrParameter
   /**
    * Overrides for the DynamoDB table used for storing GitHub push events.
    *
@@ -79,7 +84,12 @@ export class GitHubPushWebhookApi extends constructs.Construct {
         timeout: cdk.Duration.seconds(10),
         logRetention: logs.RetentionDays.ONE_MONTH,
         environment: {
-          SECRET_NAME: props.gitHubWebhookSecret.secretName,
+          SECRET_NAME: isSecret(props.gitHubWebhookSecret)
+            ? props.gitHubWebhookSecret.secretName
+            : props.gitHubWebhookSecret.parameterName,
+          SECRET_TYPE: isSecret(props.gitHubWebhookSecret)
+            ? "secrets-manager"
+            : "parameter-store",
           TABLE_NAME: this.table.tableName,
         },
       },

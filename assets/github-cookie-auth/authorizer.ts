@@ -1,13 +1,29 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { KMS } from "@aws-sdk/client-kms"
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import type * as octokitTypes from "@octokit/types"
 import type * as lambdaTypes from "aws-lambda"
 import { getCookieValue, httpRequest } from "./lib"
 
 const secretsManager = new SecretsManager()
+const ssmClient = new SSMClient({})
 const kms = new KMS()
+
+async function getSecretValue(
+  name: string,
+  type: string,
+): Promise<string | undefined> {
+  if (type === "parameter-store") {
+    const result = await ssmClient.send(
+      new GetParameterCommand({ Name: name, WithDecryption: true }),
+    )
+    return result.Parameter?.Value
+  }
+  const result = await secretsManager.getSecretValue({ SecretId: name })
+  return result.SecretString
+}
 
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
@@ -57,6 +73,7 @@ export const handler = async (
     accessControl,
     allowedOrigin,
     secretName,
+    secretType,
     authCookieEncryptionKeyArn,
     authCookieName,
     gitHubAppId,
@@ -71,6 +88,7 @@ export const handler = async (
       : undefined,
     process.env.ALLOWED_ORIGIN,
     process.env.SECRET_NAME,
+    process.env.SECRET_TYPE || "secrets-manager",
     process.env.AUTH_COOKIE_ENCRYPTION_KEY_ARN,
     process.env.AUTH_COOKIE_NAME,
     process.env.GITHUB_APP_ID,
@@ -143,19 +161,16 @@ export const handler = async (
     throw new Error("Unauthenticated")
   }
 
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
-
-  const secrets = secret.SecretString
-    ? (JSON.parse(secret.SecretString) as {
+  const secretString = await getSecretValue(secretName, secretType)
+  const secrets = secretString
+    ? (JSON.parse(secretString) as {
         clientId: string
         clientSecret: string
       })
     : null
 
   if (!secrets || !secrets.clientId || !secrets.clientSecret) {
-    console.error("Could not properly read secrets from Secrets Manager")
+    console.error("Could not properly read secret")
     throw new Error("Unauthenticated")
   }
 
