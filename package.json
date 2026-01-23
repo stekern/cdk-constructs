@@ -35,12 +35,12 @@
     ]
   },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "3.974.0",
-    "@aws-sdk/client-kms": "3.974.0",
-    "@aws-sdk/client-secrets-manager": "3.974.0",
-    "@aws-sdk/client-servicediscovery": "3.974.0",
-    "@aws-sdk/lib-dynamodb": "3.974.0",
-    "@aws-sdk/util-dynamodb": "3.974.0",
+    "@aws-sdk/client-dynamodb": "3.975.0",
+    "@aws-sdk/client-kms": "3.975.0",
+    "@aws-sdk/client-secrets-manager": "3.975.0",
+    "@aws-sdk/client-servicediscovery": "3.975.0",
+    "@aws-sdk/lib-dynamodb": "3.975.0",
+    "@aws-sdk/util-dynamodb": "3.975.0",
     "@biomejs/biome": "1.9.4",
     "@commitlint/cli": "20.3.1",
     "@commitlint/config-conventional": "20.3.1",
