@@ -49,7 +49,7 @@
     "@tsconfig/node24": "24.0.4",
     "@types/aws-lambda": "8.10.160",
     "@types/jest": "29.5.14",
-    "@types/node": "22.19.11",
+    "@types/node": "22.19.12",
     "aws-cdk": "2.1107.0",
     "aws-cdk-lib": "2.240.0",
     "aws-sdk": "2.1693.0",
