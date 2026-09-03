@@ -47,7 +47,7 @@
     "@octokit/types": "7.5.1",
     "@octokit/webhooks-types": "6.11.0",
     "@tsconfig/node24": "24.0.5",
-    "@types/aws-lambda": "8.10.161",
+    "@types/aws-lambda": "8.10.163",
     "@types/jest": "29.5.14",
     "@types/node": "22.19.15",
     "aws-cdk": "2.1110.0",
