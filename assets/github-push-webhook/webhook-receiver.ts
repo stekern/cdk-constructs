@@ -1,11 +1,15 @@
 import { createHmac, timingSafeEqual } from "node:crypto"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import type * as lambdaTypes from "aws-lambda"
+import {
+  createSecretSourceClients,
+  readSecretSource,
+  secretSourceFromEnvironment,
+} from "../secret-source"
 import type { DbPushEvent } from "./types"
 
-const secretsManager = new SecretsManager()
+const secretSourceClients = createSecretSourceClients()
 
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
@@ -23,9 +27,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   console.log("Triggered with event:", JSON.stringify(event, null, 2))
 
   const tableName = process.env.TABLE_NAME
-  const secretName = process.env.SECRET_NAME
+  const secretSource = secretSourceFromEnvironment()
 
-  if (!tableName || !secretName) {
+  if (!tableName || !secretSource) {
     console.error("Missing required environment variables")
     return {
       statusCode: 500,
@@ -47,13 +51,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
-
-  const secretToken = secret.SecretString || null
+  const secretToken = await readSecretSource(secretSource, secretSourceClients)
   if (!secretToken) {
-    console.error("Could not properly read secret from Secrets Manager")
+    console.error("Could not properly read webhook secret")
     return {
       statusCode: 500,
     }

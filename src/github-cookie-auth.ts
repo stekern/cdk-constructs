@@ -9,8 +9,11 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
-import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
+import {
+  type SecretReference,
+  resolveSecretReference,
+} from "./secret-reference"
 
 type Props = {
   /**
@@ -23,14 +26,14 @@ type Props = {
    */
   gitHubAppId: string
   /**
-   * A Secrets Manager secret containing the client credentials
-   * for the GitHub App in JSON format:
+   * A Secrets Manager secret or SSM SecureString parameter containing the
+   * client credentials for the GitHub App in JSON format:
    * {
    *   "clientId": "<client-id>",
    *   "clientSecret": "<client-secret>"
    * }
    */
-  clientCredentials: sm.ISecret
+  clientCredentials: SecretReference
   authCookieConfiguration: {
     /**
      * A KMS key that will be used to encrypt the access token
@@ -164,6 +167,7 @@ export class GitHubCookieAuth extends constructs.Construct {
       "Access-Control-Allow-Methods": apigateway.Cors.ALL_METHODS.join(","),
       "Access-Control-Allow-Origin": props.apiConfiguration.allowedOrigin,
     }
+    const clientCredentials = resolveSecretReference(props.clientCredentials)
 
     /*
      * Table for caching Lambda authorizer responses
@@ -209,7 +213,10 @@ export class GitHubCookieAuth extends constructs.Construct {
       logRetention: logs.RetentionDays.ONE_MONTH,
       environment: {
         ALLOWED_ORIGIN: props.apiConfiguration.allowedOrigin,
-        SECRET_NAME: props.clientCredentials.secretName,
+        SECRET_NAME: clientCredentials.name,
+        ...(clientCredentials.type === "ssm"
+          ? { SECRET_SOURCE_TYPE: "ssm" }
+          : {}),
         AUTH_COOKIE_NAME: authCookieName,
         AUTH_COOKIE_ENCRYPTION_KEY_ARN:
           props.authCookieConfiguration.encryptionKey.keyArn,
@@ -226,7 +233,7 @@ export class GitHubCookieAuth extends constructs.Construct {
       tracing: lambda.Tracing.ACTIVE,
     })
     cacheTable.grantReadWriteData(this.authorizerFn)
-    props.clientCredentials.grantRead(this.authorizerFn)
+    clientCredentials.grantRead(this.authorizerFn)
     props.authCookieConfiguration.encryptionKey.grantDecrypt(this.authorizerFn)
 
     this.authorizer = new apigateway.RequestAuthorizer(this, "Authorizer", {
@@ -248,7 +255,10 @@ export class GitHubCookieAuth extends constructs.Construct {
       environment: {
         RESPONSE_HEADERS: JSON.stringify(responseHeaders),
         NONCE_COOKIE_NAME: nonceCookieName,
-        SECRET_NAME: props.clientCredentials.secretName,
+        SECRET_NAME: clientCredentials.name,
+        ...(clientCredentials.type === "ssm"
+          ? { SECRET_SOURCE_TYPE: "ssm" }
+          : {}),
         CALLBACK_URL: `https://${props.apiConfiguration.domainName}/callback`,
         NONCE_COOKIE_ATTRIBUTES: Object.entries(nonceCookieAttributes)
           .map(([attribute, value]) => {
@@ -264,7 +274,7 @@ export class GitHubCookieAuth extends constructs.Construct {
           .join("; "),
       },
     })
-    props.clientCredentials.grantRead(requestFn)
+    clientCredentials.grantRead(requestFn)
 
     const callbackFn = new NodejsFunction(this, "CallbackFn", {
       entry: path.join(
@@ -279,7 +289,10 @@ export class GitHubCookieAuth extends constructs.Construct {
       environment: {
         REDIRECT_URL: props.apiConfiguration.redirectUrl,
         NONCE_COOKIE_NAME: nonceCookieName,
-        SECRET_NAME: props.clientCredentials.secretName,
+        SECRET_NAME: clientCredentials.name,
+        ...(clientCredentials.type === "ssm"
+          ? { SECRET_SOURCE_TYPE: "ssm" }
+          : {}),
         RESPONSE_HEADERS: JSON.stringify(responseHeaders),
         AUTH_COOKIE_NAME: authCookieName,
         AUTH_COOKIE_ENCRYPTION_KEY_ARN:
@@ -298,7 +311,7 @@ export class GitHubCookieAuth extends constructs.Construct {
           .join("; "),
       },
     })
-    props.clientCredentials.grantRead(callbackFn)
+    clientCredentials.grantRead(callbackFn)
     props.authCookieConfiguration.encryptionKey.grantEncrypt(callbackFn)
 
     const authProxyApi = new apigateway.RestApi(this, "ProxyApi", {

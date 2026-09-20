@@ -1,10 +1,14 @@
 import { createHash } from "node:crypto"
 import { KMS } from "@aws-sdk/client-kms"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import type * as lambdaTypes from "aws-lambda"
+import {
+  createSecretSourceClients,
+  readSecretSource,
+  secretSourceFromEnvironment,
+} from "../secret-source"
 import { getCookieValue, httpRequest } from "./lib"
 
-const secretsManager = new SecretsManager()
+const secretSourceClients = createSecretSourceClients()
 const kms = new KMS()
 
 export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
@@ -14,7 +18,6 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     authCookieAttributes,
     authCookieEncryptionKeyArn,
     responseHeaders,
-    secretName,
     redirectUrl,
   ] = [
     process.env.NONCE_COOKIE_NAME,
@@ -24,13 +27,13 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     process.env.RESPONSE_HEADERS
       ? (JSON.parse(process.env.RESPONSE_HEADERS) as Record<string, string>)
       : undefined,
-    process.env.SECRET_NAME,
     process.env.REDIRECT_URL,
   ]
+  const secretSource = secretSourceFromEnvironment()
   if (
     !nonceCookieName ||
     !authCookieName ||
-    !secretName ||
+    !secretSource ||
     !authCookieEncryptionKeyArn ||
     !redirectUrl
   ) {
@@ -80,18 +83,16 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   }
 
   // Perform code exchange
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
+  const secretValue = await readSecretSource(secretSource, secretSourceClients)
 
-  const secrets = secret.SecretString
-    ? (JSON.parse(secret.SecretString) as {
+  const secrets = secretValue
+    ? (JSON.parse(secretValue) as {
         clientId: string
         clientSecret: string
       })
     : null
   if (!secrets || !secrets.clientId || !secrets.clientSecret) {
-    console.error("Could not properly read secrets from Secrets Manager")
+    console.error("Could not properly read client credentials")
     return {
       headers: {
         ...responseHeaders,

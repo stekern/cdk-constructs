@@ -1,25 +1,26 @@
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { createSecretSourceClients, readSecretSource } from "../secret-source"
 import type { ICache, ISecretStore } from "./ports"
 
 export class SecretStore implements ISecretStore {
-  private client: SecretsManager
-  constructor() {
-    this.client = new SecretsManager({
-      // To avoid the need for cross region replication of secrets
-      region: "us-east-1",
-    })
-  }
+  private clients = createSecretSourceClients("us-east-1")
+
   async getSecret(secretName: string): Promise<string | undefined> {
-    let secret
+    const sourceType = process.env.SECRET_SOURCE_TYPE ?? "secretsManager"
+    if (sourceType !== "secretsManager" && sourceType !== "ssm") {
+      throw new Error(`Unsupported secret source type: ${sourceType}`)
+    }
     try {
-      const result = await this.client.getSecretValue({
-        SecretId: secretName,
-      })
-      secret = result.SecretString
+      return await readSecretSource(
+        {
+          type: sourceType,
+          name: secretName,
+        },
+        this.clients,
+      )
     } catch (e) {
       console.error(e)
     }
-    return secret
+    return undefined
   }
 }
 

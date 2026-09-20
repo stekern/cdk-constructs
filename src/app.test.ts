@@ -9,6 +9,7 @@ import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as kms from "aws-cdk-lib/aws-kms"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import * as ssm from "aws-cdk-lib/aws-ssm"
 import * as customconstructs from "."
 
 const sanitizedTemplate = (stack: cdk.Stack) => {
@@ -67,6 +68,34 @@ describe("GitHubPushWebhookApi", () => {
     })
     expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
+  test("should match snapshot with an SSM parameter", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack")
+    const domainName = "example.com"
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      stack,
+      "HostedZone",
+      {
+        zoneName: domainName,
+        hostedZoneId: "/hostedzone/ABCDEF12345678",
+      },
+    )
+    const certificate = new cm.Certificate(stack, "Certificate", {
+      domainName: `*.${domainName}`,
+      validation: cm.CertificateValidation.fromDns(hostedZone),
+    })
+    const gitHubWebhookSecret =
+      ssm.StringParameter.fromSecureStringParameterAttributes(stack, "Secret", {
+        parameterName: "/github/webhook-secret",
+      })
+    new customconstructs.GitHubPushWebhookApi(stack, "GitHubPushWebhookApi", {
+      domainName,
+      hostedZone,
+      certificate,
+      gitHubWebhookSecret,
+    })
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
 })
 describe("GitHubCookieAuth", () => {
   test("should match snapshot", () => {
@@ -86,6 +115,69 @@ describe("GitHubCookieAuth", () => {
       validation: cm.CertificateValidation.fromDns(hostedZone),
     })
     const clientCredentials = new sm.Secret(stack, "ClientCredentials")
+    const key = new kms.Key(stack, "Key")
+    const gitHubCookieAuth = new customconstructs.GitHubCookieAuth(
+      stack,
+      "GitHubCookieAuth",
+      {
+        gitHubAppId: "123456",
+        authorizerResponseTtl: cdk.Duration.minutes(15),
+        clientCredentials,
+        authCookieConfiguration: {
+          encryptionKey: key,
+          attributes: {
+            domain: domainName,
+          },
+        },
+        nonceCookieConfiguration: {
+          name: "nonce",
+        },
+        accessControl: {
+          type: "USERNAME",
+          whitelist: ["user"],
+        },
+        apiConfiguration: {
+          certificate,
+          domainName: `auth.${domainName}`,
+          hostedZone,
+          allowedOrigin: `https://app.${domainName}`,
+          redirectUrl: `https://app.${domainName}`,
+        },
+      },
+    )
+
+    // NOTE: An authorizer needs to be attached to a REST API, so we need to attach it to a dummy API for the test to work
+    new apigw.RestApi(stack, "Api", {
+      defaultMethodOptions: {
+        authorizer: gitHubCookieAuth.authorizer,
+      },
+    }).root.addMethod("GET")
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
+  test("should match snapshot with an SSM parameter", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack")
+    const domainName = "example.com"
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      stack,
+      "HostedZone",
+      {
+        zoneName: domainName,
+        hostedZoneId: "/hostedzone/ABCDEF12345678",
+      },
+    )
+    const certificate = new cm.Certificate(stack, "Certificate", {
+      domainName: `*.${domainName}`,
+      validation: cm.CertificateValidation.fromDns(hostedZone),
+    })
+    const clientCredentials =
+      ssm.StringParameter.fromSecureStringParameterAttributes(
+        stack,
+        "ClientCredentials",
+        {
+          parameterName: "/github/client-credentials",
+        },
+      )
     const key = new kms.Key(stack, "Key")
     const gitHubCookieAuth = new customconstructs.GitHubCookieAuth(
       stack,
@@ -193,6 +285,51 @@ describe("GitHubWorkflowRunWebhookApi", () => {
     })
     expect(sanitizedTemplate(stack)).toMatchSnapshot()
   })
+  test("should match snapshot with an SSM parameter", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack")
+    const domainName = "example.com"
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      stack,
+      "HostedZone",
+      {
+        zoneName: domainName,
+        hostedZoneId: "/hostedzone/ABCDEF12345678",
+      },
+    )
+    const certificate = new cm.Certificate(stack, "Certificate", {
+      domainName: `*.${domainName}`,
+      validation: cm.CertificateValidation.fromDns(hostedZone),
+    })
+    const gitHubWebhookSecret =
+      ssm.StringParameter.fromSecureStringParameterAttributes(
+        stack,
+        "WebhookTokenSecret",
+        {
+          parameterName: "/github/webhook-secret",
+        },
+      )
+    const table = new dynamodb.Table(stack, "Table", {
+      partitionKey: {
+        name: "PK",
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: "SK",
+        type: dynamodb.AttributeType.STRING,
+      },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+    })
+    new customconstructs.GitHubWorkflowRunWebhookApi(stack, "WebhookApi", {
+      gitHubAppId: "123456",
+      gitHubWebhookSecret,
+      domainName: `hooks.${domainName}`,
+      table,
+      hostedZone,
+      certificate,
+    })
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
 })
 describe("BasicAuthBucket", () => {
   test("should match snapshot", () => {
@@ -216,6 +353,42 @@ describe("BasicAuthBucket", () => {
       validation: cm.CertificateValidation.fromDns(hostedZone),
     })
     const secret = sm.Secret.fromSecretNameV2(stack, "Secret", "my-secret")
+
+    new customconstructs.BasicAuthBucket(stack, "BasicAuthBucket", {
+      domainName: `protected.${domainName}`,
+      hostedZone,
+      secret,
+      certificate,
+    })
+    expect(sanitizedTemplate(stack)).toMatchSnapshot()
+  })
+  test("should match snapshot with an SSM parameter", () => {
+    const app = new cdk.App()
+    const stack = new cdk.Stack(app, "Stack", {
+      env: {
+        region: "us-east-1",
+      },
+    })
+    const domainName = "example.com"
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      stack,
+      "HostedZone",
+      {
+        zoneName: domainName,
+        hostedZoneId: "/hostedzone/ABCDEF12345678",
+      },
+    )
+    const certificate = new cm.Certificate(stack, "Certificate", {
+      domainName: `*.${domainName}`,
+      validation: cm.CertificateValidation.fromDns(hostedZone),
+    })
+    const secret = ssm.StringParameter.fromSecureStringParameterAttributes(
+      stack,
+      "Secret",
+      {
+        parameterName: "/basic-auth/credentials",
+      },
+    )
 
     new customconstructs.BasicAuthBucket(stack, "BasicAuthBucket", {
       domainName: `protected.${domainName}`,
