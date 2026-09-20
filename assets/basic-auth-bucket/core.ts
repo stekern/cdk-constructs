@@ -4,6 +4,9 @@ import {
   verifyBasicAuthCredentials,
 } from "./lib"
 import type { ICache, IRequestEvent, ISecretStore } from "./ports"
+
+const secretCacheKey = "credentials"
+
 export class AuthorizeRequest {
   constructor(
     private secretStore: ISecretStore,
@@ -16,13 +19,13 @@ export class AuthorizeRequest {
     if (base64EncodedCredentials) {
       let secret
       if (this.cache) {
-        secret = this.cache.get(requestEvent.secretName)
+        secret = this.cache.get(secretCacheKey)
         if (!secret) {
-          secret = await this.secretStore.getSecret(requestEvent.secretName)
-          this.cache.put(requestEvent.secretName, secret)
+          secret = await this.secretStore.getSecret()
+          this.cache.put(secretCacheKey, secret)
         }
       } else {
-        secret = await this.secretStore.getSecret(requestEvent.secretName)
+        secret = await this.secretStore.getSecret()
       }
       const parsedCredentials = getParsedCredentials(secret)
       if (parsedCredentials) {

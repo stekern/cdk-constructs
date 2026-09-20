@@ -3,8 +3,8 @@ import { KMS } from "@aws-sdk/client-kms"
 import type * as lambdaTypes from "aws-lambda"
 import {
   createSecretSourceClients,
+  parseSecretReference,
   readSecretSource,
-  secretSourceFromEnvironment,
 } from "../secret-source"
 import { getCookieValue, httpRequest } from "./lib"
 
@@ -29,7 +29,10 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
       : undefined,
     process.env.REDIRECT_URL,
   ]
-  const secretSource = secretSourceFromEnvironment()
+  const secretReference = process.env.SECRET_NAME
+  const secretSource = secretReference
+    ? parseSecretReference(secretReference)
+    : undefined
   if (
     !nonceCookieName ||
     !authCookieName ||

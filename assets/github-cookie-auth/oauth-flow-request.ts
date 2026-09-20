@@ -2,8 +2,8 @@ import { createHash } from "node:crypto"
 import type * as lambdaTypes from "aws-lambda"
 import {
   createSecretSourceClients,
+  parseSecretReference,
   readSecretSource,
-  secretSourceFromEnvironment,
 } from "../secret-source"
 import { generateRandomString, getUrlWithEncodedQueryParams } from "./lib"
 
@@ -19,7 +19,10 @@ export const handler = async (_event: lambdaTypes.APIGatewayProxyEvent) => {
         ? (JSON.parse(process.env.RESPONSE_HEADERS) as Record<string, string>)
         : undefined,
     ]
-  const secretSource = secretSourceFromEnvironment()
+  const secretReference = process.env.SECRET_NAME
+  const secretSource = secretReference
+    ? parseSecretReference(secretReference)
+    : undefined
   if (!nonceCookieName || !secretSource || !callbackUrl) {
     console.error("Missing required environment variables")
     return {

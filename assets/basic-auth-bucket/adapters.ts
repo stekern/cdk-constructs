@@ -1,22 +1,18 @@
-import { createSecretSourceClients, readSecretSource } from "../secret-source"
+import {
+  type SecretSource,
+  createSecretSourceClients,
+  readSecretSource,
+} from "../secret-source"
 import type { ICache, ISecretStore } from "./ports"
 
 export class SecretStore implements ISecretStore {
   private clients = createSecretSourceClients("us-east-1")
 
-  async getSecret(secretName: string): Promise<string | undefined> {
-    const sourceType = process.env.SECRET_SOURCE_TYPE ?? "secretsManager"
-    if (sourceType !== "secretsManager" && sourceType !== "ssm") {
-      throw new Error(`Unsupported secret source type: ${sourceType}`)
-    }
+  constructor(private readonly source: SecretSource) {}
+
+  async getSecret(): Promise<string | undefined> {
     try {
-      return await readSecretSource(
-        {
-          type: sourceType,
-          name: secretName,
-        },
-        this.clients,
-      )
+      return await readSecretSource(this.source, this.clients)
     } catch (e) {
       console.error(e)
     }
@@ -25,9 +21,9 @@ export class SecretStore implements ISecretStore {
 }
 
 export class InMemorySecretStore implements ISecretStore {
-  constructor(private secrets: Record<string, string>) {}
-  async getSecret(secretName: string): Promise<string | undefined> {
-    return Promise.resolve(this.secrets[secretName])
+  constructor(private readonly secret?: string) {}
+  async getSecret(): Promise<string | undefined> {
+    return Promise.resolve(this.secret)
   }
 }
 

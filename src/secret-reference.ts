@@ -12,8 +12,7 @@ import type * as ssm from "aws-cdk-lib/aws-ssm"
 export type SecretReference = sm.ISecret | ssm.IParameter
 
 export type ResolvedSecretReference = {
-  type: "secretsManager" | "ssm"
-  name: string
+  reference: string
   grantRead: (grantee: iam.IGrantable) => iam.Grant
 }
 
@@ -40,15 +39,13 @@ export const resolveSecretReference = (
 ): ResolvedSecretReference => {
   if (isSecretsManagerSecret(reference)) {
     return {
-      type: "secretsManager",
-      name: reference.secretName,
+      reference: `sm://${reference.secretName}`,
       grantRead: (grantee) => reference.grantRead(grantee),
     }
   }
   if (isSecureStringParameter(reference)) {
     return {
-      type: "ssm",
-      name: reference.parameterName,
+      reference: `ssm://${reference.parameterName}`,
       grantRead: (grantee) => reference.grantRead(grantee),
     }
   }

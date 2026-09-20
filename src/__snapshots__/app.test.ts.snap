@@ -3371,52 +3371,60 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
             "GITHUB_APP_ID": "123456",
             "SECRET_NAME": {
               "Fn::Join": [
-                "-",
+                "",
                 [
+                  "sm://",
                   {
-                    "Fn::Select": [
-                      0,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "ClientCredentialsEC83A0CF",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    "Fn::Select": [
-                      1,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "ClientCredentialsEC83A0CF",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "ClientCredentialsEC83A0CF",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "ClientCredentialsEC83A0CF",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
                     ],
                   },
                 ],
@@ -3670,52 +3678,60 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
             "RESPONSE_HEADERS": "{"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD","Access-Control-Allow-Origin":"https://app.example.com"}",
             "SECRET_NAME": {
               "Fn::Join": [
-                "-",
+                "",
                 [
+                  "sm://",
                   {
-                    "Fn::Select": [
-                      0,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "ClientCredentialsEC83A0CF",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    "Fn::Select": [
-                      1,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "ClientCredentialsEC83A0CF",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "ClientCredentialsEC83A0CF",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "ClientCredentialsEC83A0CF",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
                     ],
                   },
                 ],
@@ -4409,52 +4425,60 @@ exports[`GitHubCookieAuth should match snapshot 1`] = `
             "RESPONSE_HEADERS": "{"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD","Access-Control-Allow-Origin":"https://app.example.com"}",
             "SECRET_NAME": {
               "Fn::Join": [
-                "-",
+                "",
                 [
+                  "sm://",
                   {
-                    "Fn::Select": [
-                      0,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "ClientCredentialsEC83A0CF",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    "Fn::Select": [
-                      1,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "ClientCredentialsEC83A0CF",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "ClientCredentialsEC83A0CF",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "ClientCredentialsEC83A0CF",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
                     ],
                   },
                 ],
@@ -4989,8 +5013,7 @@ exports[`GitHubCookieAuth should match snapshot with an SSM parameter 1`] = `
             },
             "AUTH_COOKIE_NAME": "token",
             "GITHUB_APP_ID": "123456",
-            "SECRET_NAME": "/github/client-credentials",
-            "SECRET_SOURCE_TYPE": "ssm",
+            "SECRET_NAME": "ssm:///github/client-credentials",
           },
         },
         "Handler": "index.handler",
@@ -5256,8 +5279,7 @@ exports[`GitHubCookieAuth should match snapshot with an SSM parameter 1`] = `
             "NONCE_COOKIE_NAME": "nonce",
             "REDIRECT_URL": "https://app.example.com",
             "RESPONSE_HEADERS": "{"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD","Access-Control-Allow-Origin":"https://app.example.com"}",
-            "SECRET_NAME": "/github/client-credentials",
-            "SECRET_SOURCE_TYPE": "ssm",
+            "SECRET_NAME": "ssm:///github/client-credentials",
           },
         },
         "Handler": "index.handler",
@@ -5963,8 +5985,7 @@ exports[`GitHubCookieAuth should match snapshot with an SSM parameter 1`] = `
             "NONCE_COOKIE_ATTRIBUTES": "Secure; HttpOnly; SameSite=Lax",
             "NONCE_COOKIE_NAME": "nonce",
             "RESPONSE_HEADERS": "{"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD","Access-Control-Allow-Origin":"https://app.example.com"}",
-            "SECRET_NAME": "/github/client-credentials",
-            "SECRET_SOURCE_TYPE": "ssm",
+            "SECRET_NAME": "ssm:///github/client-credentials",
           },
         },
         "Handler": "index.handler",
@@ -6600,52 +6621,60 @@ exports[`GitHubPushWebhookApi should match snapshot 1`] = `
           "Variables": {
             "SECRET_NAME": {
               "Fn::Join": [
-                "-",
+                "",
                 [
+                  "sm://",
                   {
-                    "Fn::Select": [
-                      0,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "SecretA720EF05",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    "Fn::Select": [
-                      1,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "SecretA720EF05",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "SecretA720EF05",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "SecretA720EF05",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
                     ],
                   },
                 ],
@@ -7265,8 +7294,7 @@ exports[`GitHubPushWebhookApi should match snapshot with an SSM parameter 1`] = 
         },
         "Environment": {
           "Variables": {
-            "SECRET_NAME": "/github/webhook-secret",
-            "SECRET_SOURCE_TYPE": "ssm",
+            "SECRET_NAME": "ssm:///github/webhook-secret",
             "TABLE_NAME": {
               "Ref": "GitHubPushWebhookApiGitHubPushTable2ECBC1E6",
             },
@@ -7972,52 +8000,60 @@ exports[`GitHubWorkflowRunWebhookApi should match snapshot 1`] = `
             "GITHUB_APP_ID": "123456",
             "SECRET_NAME": {
               "Fn::Join": [
-                "-",
+                "",
                 [
+                  "sm://",
                   {
-                    "Fn::Select": [
-                      0,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "WebhookTokenSecretBFD7CBC1",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    "Fn::Select": [
-                      1,
-                      {
-                        "Fn::Split": [
-                          "-",
-                          {
-                            "Fn::Select": [
-                              6,
-                              {
-                                "Fn::Split": [
-                                  ":",
-                                  {
-                                    "Ref": "WebhookTokenSecretBFD7CBC1",
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "WebhookTokenSecretBFD7CBC1",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::Split": [
+                                "-",
+                                {
+                                  "Fn::Select": [
+                                    6,
+                                    {
+                                      "Fn::Split": [
+                                        ":",
+                                        {
+                                          "Ref": "WebhookTokenSecretBFD7CBC1",
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
                     ],
                   },
                 ],
@@ -8770,8 +8806,7 @@ exports[`GitHubWorkflowRunWebhookApi should match snapshot with an SSM parameter
         "Environment": {
           "Variables": {
             "GITHUB_APP_ID": "123456",
-            "SECRET_NAME": "/github/webhook-secret",
-            "SECRET_SOURCE_TYPE": "ssm",
+            "SECRET_NAME": "ssm:///github/webhook-secret",
             "TABLE_NAME": {
               "Ref": "TableCD117FA1",
             },

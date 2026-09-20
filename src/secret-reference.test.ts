@@ -11,8 +11,7 @@ describe("resolveSecretReference", () => {
     const secret = new sm.Secret(stack, "Secret")
 
     expect(resolveSecretReference(secret)).toMatchObject({
-      type: "secretsManager",
-      name: secret.secretName,
+      reference: `sm://${secret.secretName}`,
     })
   })
 
@@ -28,8 +27,7 @@ describe("resolveSecretReference", () => {
     )
 
     expect(resolveSecretReference(parameter)).toMatchObject({
-      type: "ssm",
-      name: "/github/client-credentials",
+      reference: "ssm:///github/client-credentials",
     })
   })
 

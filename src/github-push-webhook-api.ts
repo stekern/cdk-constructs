@@ -86,10 +86,7 @@ export class GitHubPushWebhookApi extends constructs.Construct {
         timeout: cdk.Duration.seconds(10),
         logRetention: logs.RetentionDays.ONE_MONTH,
         environment: {
-          SECRET_NAME: gitHubWebhookSecret.name,
-          ...(gitHubWebhookSecret.type === "ssm"
-            ? { SECRET_SOURCE_TYPE: "ssm" }
-            : {}),
+          SECRET_NAME: gitHubWebhookSecret.reference,
           TABLE_NAME: this.table.tableName,
         },
       },

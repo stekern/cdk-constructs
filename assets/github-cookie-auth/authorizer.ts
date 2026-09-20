@@ -5,8 +5,8 @@ import type * as octokitTypes from "@octokit/types"
 import type * as lambdaTypes from "aws-lambda"
 import {
   createSecretSourceClients,
+  parseSecretReference,
   readSecretSource,
-  secretSourceFromEnvironment,
 } from "../secret-source"
 import { getCookieValue, httpRequest } from "./lib"
 
@@ -79,7 +79,10 @@ export const handler = async (
     process.env.AUTHORIZER_CACHE_TABLE_NAME,
     process.env.AUTHORIZER_CACHE_TTL,
   ]
-  const secretSource = secretSourceFromEnvironment()
+  const secretReference = process.env.SECRET_NAME
+  const secretSource = secretReference
+    ? parseSecretReference(secretReference)
+    : undefined
   if (
     !accessControl ||
     !authCookieEncryptionKeyArn ||

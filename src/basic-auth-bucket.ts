@@ -60,8 +60,7 @@ export class BasicAuthBucket extends constructs.Construct {
     }
     const secret = resolveSecretReference(props.secret)
     const environmentVariables: { [key: string]: string } = {
-      SECRET_NAME: secret.name,
-      ...(secret.type === "ssm" ? { SECRET_SOURCE_TYPE: "ssm" } : {}),
+      SECRET_NAME: secret.reference,
     }
     Object.entries(environmentVariables).forEach(([key, val]) => {
       if (cdk.Token.isUnresolved(val)) {

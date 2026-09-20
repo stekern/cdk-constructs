@@ -7,8 +7,8 @@ import type { ServiceException } from "@smithy/smithy-client"
 import type * as lambdaTypes from "aws-lambda"
 import {
   createSecretSourceClients,
+  parseSecretReference,
   readSecretSource,
-  secretSourceFromEnvironment,
 } from "../secret-source"
 
 const secretSourceClients = createSecretSourceClients()
@@ -35,7 +35,10 @@ export const isAWSError = (arg: unknown): arg is ServiceException => {
 
 export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   const tableName = process.env.TABLE_NAME
-  const secretSource = secretSourceFromEnvironment()
+  const secretReference = process.env.SECRET_NAME
+  const secretSource = secretReference
+    ? parseSecretReference(secretReference)
+    : undefined
   const gitHubAppId = process.env.GITHUB_APP_ID
 
   if (!tableName || !secretSource || !gitHubAppId) {

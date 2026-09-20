@@ -213,10 +213,7 @@ export class GitHubCookieAuth extends constructs.Construct {
       logRetention: logs.RetentionDays.ONE_MONTH,
       environment: {
         ALLOWED_ORIGIN: props.apiConfiguration.allowedOrigin,
-        SECRET_NAME: clientCredentials.name,
-        ...(clientCredentials.type === "ssm"
-          ? { SECRET_SOURCE_TYPE: "ssm" }
-          : {}),
+        SECRET_NAME: clientCredentials.reference,
         AUTH_COOKIE_NAME: authCookieName,
         AUTH_COOKIE_ENCRYPTION_KEY_ARN:
           props.authCookieConfiguration.encryptionKey.keyArn,
@@ -255,10 +252,7 @@ export class GitHubCookieAuth extends constructs.Construct {
       environment: {
         RESPONSE_HEADERS: JSON.stringify(responseHeaders),
         NONCE_COOKIE_NAME: nonceCookieName,
-        SECRET_NAME: clientCredentials.name,
-        ...(clientCredentials.type === "ssm"
-          ? { SECRET_SOURCE_TYPE: "ssm" }
-          : {}),
+        SECRET_NAME: clientCredentials.reference,
         CALLBACK_URL: `https://${props.apiConfiguration.domainName}/callback`,
         NONCE_COOKIE_ATTRIBUTES: Object.entries(nonceCookieAttributes)
           .map(([attribute, value]) => {
@@ -289,10 +283,7 @@ export class GitHubCookieAuth extends constructs.Construct {
       environment: {
         REDIRECT_URL: props.apiConfiguration.redirectUrl,
         NONCE_COOKIE_NAME: nonceCookieName,
-        SECRET_NAME: clientCredentials.name,
-        ...(clientCredentials.type === "ssm"
-          ? { SECRET_SOURCE_TYPE: "ssm" }
-          : {}),
+        SECRET_NAME: clientCredentials.reference,
         RESPONSE_HEADERS: JSON.stringify(responseHeaders),
         AUTH_COOKIE_NAME: authCookieName,
         AUTH_COOKIE_ENCRYPTION_KEY_ARN:

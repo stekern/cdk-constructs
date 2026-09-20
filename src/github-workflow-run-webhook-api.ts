@@ -76,10 +76,7 @@ export class GitHubWorkflowRunWebhookApi extends constructs.Construct {
         logRetention: logs.RetentionDays.ONE_MONTH,
         environment: {
           GITHUB_APP_ID: props.gitHubAppId,
-          SECRET_NAME: gitHubWebhookSecret.name,
-          ...(gitHubWebhookSecret.type === "ssm"
-            ? { SECRET_SOURCE_TYPE: "ssm" }
-            : {}),
+          SECRET_NAME: gitHubWebhookSecret.reference,
           TABLE_NAME: props.table.tableName,
         },
       },

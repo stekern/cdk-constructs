@@ -2,7 +2,7 @@ import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { SSM } from "@aws-sdk/client-ssm"
 
 export type SecretSource = {
-  type: "secretsManager" | "ssm"
+  type: "sm" | "ssm"
   name: string
 }
 
@@ -21,17 +21,12 @@ export const createSecretSourceClients = (
   }
 }
 
-export const secretSourceFromEnvironment = (
-  typeEnvironmentVariable = "SECRET_SOURCE_TYPE",
-  nameEnvironmentVariable = "SECRET_NAME",
-): SecretSource | undefined => {
-  const name = process.env[nameEnvironmentVariable]
-  if (!name) {
-    return undefined
-  }
-  const type = process.env[typeEnvironmentVariable] ?? "secretsManager"
-  if (type !== "secretsManager" && type !== "ssm") {
-    throw new Error(`Unsupported secret source type: ${type}`)
+export const parseSecretReference = (reference: string): SecretSource => {
+  const separatorIndex = reference.indexOf("://")
+  const type = reference.slice(0, separatorIndex)
+  const name = reference.slice(separatorIndex + 3)
+  if ((type !== "sm" && type !== "ssm") || !name) {
+    throw new Error(`Unsupported secret reference: ${reference}`)
   }
   return { type, name }
 }
