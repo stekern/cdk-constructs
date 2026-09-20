@@ -23,6 +23,9 @@ export const createSecretSourceClients = (
 
 export const parseSecretReference = (reference: string): SecretSource => {
   const separatorIndex = reference.indexOf("://")
+  if (separatorIndex === -1) {
+    return { type: "sm", name: reference }
+  }
   const type = reference.slice(0, separatorIndex)
   const name = reference.slice(separatorIndex + 3)
   if ((type !== "sm" && type !== "ssm") || !name) {

@@ -16,9 +16,16 @@ describe("parseSecretReference", () => {
     })
   })
 
-  test("rejects a reference without a supported protocol", () => {
-    expect(() => parseSecretReference("my-secret")).toThrow(
-      "Unsupported secret reference: my-secret",
+  test("defaults an unprefixed reference to Secrets Manager", () => {
+    expect(parseSecretReference("my-secret")).toEqual({
+      type: "sm",
+      name: "my-secret",
+    })
+  })
+
+  test("rejects an unsupported protocol", () => {
+    expect(() => parseSecretReference("other://my-secret")).toThrow(
+      "Unsupported secret reference: other://my-secret",
     )
   })
 })
