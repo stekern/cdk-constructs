@@ -1,10 +1,9 @@
 export interface ISecretStore {
-  getSecret(secretName: string): Promise<string | undefined>
+  getSecret(): Promise<string | undefined>
 }
 
 export interface IRequestEvent {
   authorizationHeader: string
-  secretName: string
 }
 
 export interface ICache {

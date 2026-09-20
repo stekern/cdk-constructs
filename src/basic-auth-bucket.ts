@@ -11,8 +11,11 @@ import * as logs from "aws-cdk-lib/aws-logs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
 import * as s3 from "aws-cdk-lib/aws-s3"
-import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
+import {
+  type SecretReference,
+  resolveSecretReference,
+} from "./secret-reference"
 
 interface Props extends cdk.StackProps {
   /**
@@ -29,7 +32,8 @@ interface Props extends cdk.StackProps {
    */
   certificate: cm.ICertificate
   /**
-   * Secret set up in us-east-1 containing basic auth credentials.
+   * A Secrets Manager secret or SSM SecureString parameter set up in us-east-1
+   * containing basic auth credentials.
    *
    * NOTE: The secret is expected to be in the following format:
    *
@@ -38,7 +42,7 @@ interface Props extends cdk.StackProps {
    *   "password:" "<password>"
    * }
    */
-  secret: sm.ISecret
+  secret: SecretReference
 }
 
 /**
@@ -54,8 +58,9 @@ export class BasicAuthBucket extends constructs.Construct {
         "The construct needs to be set up in a stack in us-east-1",
       )
     }
+    const secret = resolveSecretReference(props.secret)
     const environmentVariables: { [key: string]: string } = {
-      SECRET_NAME: props.secret.secretName,
+      SECRET_NAME: secret.reference,
     }
     Object.entries(environmentVariables).forEach(([key, val]) => {
       if (cdk.Token.isUnresolved(val)) {
@@ -81,7 +86,7 @@ export class BasicAuthBucket extends constructs.Construct {
       timeout: cdk.Duration.seconds(5),
       logRetention: logs.RetentionDays.ONE_MONTH,
     })
-    props.secret.grantRead(fn)
+    secret.grantRead(fn)
     fn.addToRolePolicy(
       new iam.PolicyStatement({
         actions: [

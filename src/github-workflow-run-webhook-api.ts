@@ -8,8 +8,11 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
-import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
+import {
+  type SecretReference,
+  resolveSecretReference,
+} from "./secret-reference"
 
 type Props = {
   /**
@@ -17,9 +20,10 @@ type Props = {
    */
   gitHubAppId: string
   /**
-   * A secret containing a token used to sign and validate requests.
+   * A Secrets Manager secret or SSM SecureString parameter containing a token
+   * used to sign and validate requests.
    */
-  gitHubWebhookSecret: sm.ISecret
+  gitHubWebhookSecret: SecretReference
   /**
    * A DynamoDB table to store received workflow runs in.
    *
@@ -55,6 +59,9 @@ export class GitHubWorkflowRunWebhookApi extends constructs.Construct {
   public readonly webhookApi: apigateway.LambdaRestApi
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
+    const gitHubWebhookSecret = resolveSecretReference(
+      props.gitHubWebhookSecret,
+    )
     const webhookReceiverFn = new NodejsFunction(
       this,
       "WebhookReceiverLambda",
@@ -69,12 +76,12 @@ export class GitHubWorkflowRunWebhookApi extends constructs.Construct {
         logRetention: logs.RetentionDays.ONE_MONTH,
         environment: {
           GITHUB_APP_ID: props.gitHubAppId,
-          SECRET_NAME: props.gitHubWebhookSecret.secretName,
+          SECRET_NAME: gitHubWebhookSecret.reference,
           TABLE_NAME: props.table.tableName,
         },
       },
     )
-    props.gitHubWebhookSecret.grantRead(webhookReceiverFn)
+    gitHubWebhookSecret.grantRead(webhookReceiverFn)
     props.table.grantReadWriteData(webhookReceiverFn)
     this.webhookReceiverFn = webhookReceiverFn
     const api = new apigateway.LambdaRestApi(this, "WebhookApi", {

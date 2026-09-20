@@ -1,12 +1,16 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { KMS } from "@aws-sdk/client-kms"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import type * as octokitTypes from "@octokit/types"
 import type * as lambdaTypes from "aws-lambda"
+import {
+  createSecretSourceClients,
+  parseSecretReference,
+  readSecretSource,
+} from "../secret-source"
 import { getCookieValue, httpRequest } from "./lib"
 
-const secretsManager = new SecretsManager()
+const secretSourceClients = createSecretSourceClients()
 const kms = new KMS()
 
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
@@ -56,7 +60,6 @@ export const handler = async (
   const [
     accessControl,
     allowedOrigin,
-    secretName,
     authCookieEncryptionKeyArn,
     authCookieName,
     gitHubAppId,
@@ -70,17 +73,20 @@ export const handler = async (
         })
       : undefined,
     process.env.ALLOWED_ORIGIN,
-    process.env.SECRET_NAME,
     process.env.AUTH_COOKIE_ENCRYPTION_KEY_ARN,
     process.env.AUTH_COOKIE_NAME,
     process.env.GITHUB_APP_ID,
     process.env.AUTHORIZER_CACHE_TABLE_NAME,
     process.env.AUTHORIZER_CACHE_TTL,
   ]
+  const secretReference = process.env.SECRET_NAME
+  const secretSource = secretReference
+    ? parseSecretReference(secretReference)
+    : undefined
   if (
     !accessControl ||
     !authCookieEncryptionKeyArn ||
-    !secretName ||
+    !secretSource ||
     !authCookieName ||
     !allowedOrigin ||
     !gitHubAppId
@@ -143,19 +149,17 @@ export const handler = async (
     throw new Error("Unauthenticated")
   }
 
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
+  const secretValue = await readSecretSource(secretSource, secretSourceClients)
 
-  const secrets = secret.SecretString
-    ? (JSON.parse(secret.SecretString) as {
+  const secrets = secretValue
+    ? (JSON.parse(secretValue) as {
         clientId: string
         clientSecret: string
       })
     : null
 
   if (!secrets || !secrets.clientId || !secrets.clientSecret) {
-    console.error("Could not properly read secrets from Secrets Manager")
+    console.error("Could not properly read client credentials")
     throw new Error("Unauthenticated")
   }
 

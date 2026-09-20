@@ -9,15 +9,19 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53targets from "aws-cdk-lib/aws-route53-targets"
-import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
 import type { ForwardingRule } from "../assets/github-push-webhook/types"
+import {
+  type SecretReference,
+  resolveSecretReference,
+} from "./secret-reference"
 
 type Props = {
   /**
-   * A secret containing a token used to sign and validate requests from GitHub.
+   * A Secrets Manager secret or SSM SecureString parameter containing a token
+   * used to sign and validate requests from GitHub.
    */
-  gitHubWebhookSecret: sm.ISecret
+  gitHubWebhookSecret: SecretReference
   /**
    * Overrides for the DynamoDB table used for storing GitHub push events.
    *
@@ -53,6 +57,9 @@ export class GitHubPushWebhookApi extends constructs.Construct {
   public readonly table: dynamodb.ITable
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
+    const gitHubWebhookSecret = resolveSecretReference(
+      props.gitHubWebhookSecret,
+    )
     this.table = new dynamodb.Table(this, "GitHubPushTable", {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       stream: dynamodb.StreamViewType.NEW_IMAGE,
@@ -79,13 +86,13 @@ export class GitHubPushWebhookApi extends constructs.Construct {
         timeout: cdk.Duration.seconds(10),
         logRetention: logs.RetentionDays.ONE_MONTH,
         environment: {
-          SECRET_NAME: props.gitHubWebhookSecret.secretName,
+          SECRET_NAME: gitHubWebhookSecret.reference,
           TABLE_NAME: this.table.tableName,
         },
       },
     )
 
-    props.gitHubWebhookSecret.grantRead(webhookReceiverFn)
+    gitHubWebhookSecret.grantRead(webhookReceiverFn)
     this.table.grantReadWriteData(webhookReceiverFn)
     this.webhookReceiverFn = webhookReceiverFn
     const api = new apigateway.LambdaRestApi(this, "WebhookApi", {

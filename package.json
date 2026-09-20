@@ -39,6 +39,7 @@
     "@aws-sdk/client-kms": "3.982.0",
     "@aws-sdk/client-secrets-manager": "3.982.0",
     "@aws-sdk/client-servicediscovery": "3.982.0",
+    "@aws-sdk/client-ssm": "3.982.0",
     "@aws-sdk/lib-dynamodb": "3.982.0",
     "@aws-sdk/util-dynamodb": "3.982.0",
     "@biomejs/biome": "1.9.4",

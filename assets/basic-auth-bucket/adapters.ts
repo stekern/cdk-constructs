@@ -1,32 +1,29 @@
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import {
+  type SecretSource,
+  createSecretSourceClients,
+  readSecretSource,
+} from "../secret-source"
 import type { ICache, ISecretStore } from "./ports"
 
 export class SecretStore implements ISecretStore {
-  private client: SecretsManager
-  constructor() {
-    this.client = new SecretsManager({
-      // To avoid the need for cross region replication of secrets
-      region: "us-east-1",
-    })
-  }
-  async getSecret(secretName: string): Promise<string | undefined> {
-    let secret
+  private clients = createSecretSourceClients("us-east-1")
+
+  constructor(private readonly source: SecretSource) {}
+
+  async getSecret(): Promise<string | undefined> {
     try {
-      const result = await this.client.getSecretValue({
-        SecretId: secretName,
-      })
-      secret = result.SecretString
+      return await readSecretSource(this.source, this.clients)
     } catch (e) {
       console.error(e)
     }
-    return secret
+    return undefined
   }
 }
 
 export class InMemorySecretStore implements ISecretStore {
-  constructor(private secrets: Record<string, string>) {}
-  async getSecret(secretName: string): Promise<string | undefined> {
-    return Promise.resolve(this.secrets[secretName])
+  constructor(private readonly secret?: string) {}
+  async getSecret(): Promise<string | undefined> {
+    return Promise.resolve(this.secret)
   }
 }
 

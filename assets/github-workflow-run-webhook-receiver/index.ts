@@ -1,13 +1,17 @@
 import { createHmac } from "node:crypto"
 import { timingSafeEqual } from "node:crypto"
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import type * as octokitWebhooksTypes from "@octokit/webhooks-types"
 import type { ServiceException } from "@smithy/smithy-client"
 import type * as lambdaTypes from "aws-lambda"
+import {
+  createSecretSourceClients,
+  parseSecretReference,
+  readSecretSource,
+} from "../secret-source"
 
-const secretsManager = new SecretsManager()
+const secretSourceClients = createSecretSourceClients()
 const dynamodb = DynamoDBDocument.from(new DynamoDB())
 
 export const timingSafeStringComparison = (a: string, b: string) => {
@@ -31,10 +35,13 @@ export const isAWSError = (arg: unknown): arg is ServiceException => {
 
 export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
   const tableName = process.env.TABLE_NAME
-  const secretName = process.env.SECRET_NAME
+  const secretReference = process.env.SECRET_NAME
+  const secretSource = secretReference
+    ? parseSecretReference(secretReference)
+    : undefined
   const gitHubAppId = process.env.GITHUB_APP_ID
 
-  if (!tableName || !secretName || !gitHubAppId) {
+  if (!tableName || !secretSource || !gitHubAppId) {
     console.error("Missing required environment variables")
     return {
       statusCode: 500,
@@ -56,13 +63,9 @@ export const handler = async (event: lambdaTypes.APIGatewayProxyEvent) => {
     }
   }
 
-  const secret = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  })
-
-  const secretToken = secret.SecretString || null
+  const secretToken = await readSecretSource(secretSource, secretSourceClients)
   if (!secretToken) {
-    console.error("Could not properly read secret from Secrets Manager")
+    console.error("Could not properly read webhook secret")
     return {
       statusCode: 500,
     }
