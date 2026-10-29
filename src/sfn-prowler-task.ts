@@ -85,7 +85,7 @@ export class SfnProwlerTask extends constructs.Construct {
       }),
       image: ecs.ContainerImage.fromRegistry(
         // renovate: datasource=docker depName=toniblyx/prowler
-        "toniblyx/prowler:5.43.0@sha256:cf1ee9fc5b677bff8e0e35af7167585b95eb25ba5ffedfbfc52ddd13dc306dd0",
+        "toniblyx/prowler:5.47.0@sha256:d8fcbd92aa0c3f9a012e6d69e6d62fead75b65cc373d6363527ee3463d7a147f",
       ),
       command: [
         "aws",
